@@ -1,0 +1,337 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/*
+  Dark-only, no toggle (see DESIGN.md §7.6 / PRODUCT.md). This custom-variant
+  keeps shadcn's `dark:` utility classes compiling, but since `.dark` is never
+  applied to <html>, those variants simply never fire — they can't accidentally
+  activate off the visitor's OS color-scheme preference.
+*/
+@custom-variant dark (&:is(.dark *));
+
+/*
+  sahil-sanghvi(1) — "The Man Page" design system. See DESIGN.md.
+  One neutral ramp (warm-tinted, hue 75, never a pure gray), one signal
+  accent (amber, never green/cyan — The No-Green Rule), no second hue.
+  shadcn's default light/dark palette and Geist font were reconciled below
+  to point at this ramp instead of forking a parallel token vocabulary —
+  every registry component inherits it automatically.
+*/
+:root {
+  /* Raw ramp — used directly in hand-written components (nav, terminal). */
+  --color-ink-950: oklch(15% 0.008 75); /* Terminal Paper — page background */
+  --color-ink-900: oklch(19% 0.009 75); /* raised surface — cards, popovers */
+  --color-ink-700: oklch(30% 0.010 75); /* Rule Line — hairlines, borders, inputs */
+  --color-ink-400: oklch(58% 0.012 75); /* Muted Ink — furniture, secondary text */
+  --color-ink-050: oklch(93% 0.010 75); /* Body Ink — primary text */
+  --color-signal-500: oklch(75% 0.15 65); /* the one accent — links, active state, focus */
+  --color-signal-600: oklch(65% 0.14 60); /* hover / pressed */
+
+  /* shadcn's semantic vocabulary, reconciled to the ramp above. This is the */
+  /* vocabulary registry (21st.dev / shadcn) components actually consume. */
+  --background: var(--color-ink-950);
+  --foreground: var(--color-ink-050);
+  --card: var(--color-ink-900);
+  --card-foreground: var(--color-ink-050);
+  --popover: var(--color-ink-900);
+  --popover-foreground: var(--color-ink-050);
+  --primary: var(--color-signal-500); /* the one accent, used sparingly (One-Accent Rule) */
+  --primary-foreground: var(--color-ink-950);
+  --secondary: var(--color-ink-900);
+  --secondary-foreground: var(--color-ink-050);
+  --muted: var(--color-ink-900);
+  --muted-foreground: var(--color-ink-400);
+  --accent: var(--color-ink-900); /* shadcn's hover/highlight surface — neutral, not the brand accent */
+  --accent-foreground: var(--color-ink-050);
+  --destructive: oklch(62% 0.19 25);
+  --destructive-foreground: var(--color-ink-050);
+  --border: var(--color-ink-700);
+  --input: var(--color-ink-700);
+  --ring: var(--color-signal-500); /* focus rings are a legitimate "live" use of the accent */
+  --chart-1: var(--color-signal-500);
+  --chart-2: var(--color-ink-400);
+  --chart-3: var(--color-ink-700);
+  --chart-4: var(--color-ink-900);
+  --chart-5: var(--color-ink-050);
+  --radius: 0.125rem; /* Shapes: no rounding by default; the least that still reads intentional */
+  --sidebar: var(--color-ink-950);
+  --sidebar-foreground: var(--color-ink-050);
+  --sidebar-primary: var(--color-signal-500);
+  --sidebar-primary-foreground: var(--color-ink-950);
+  --sidebar-accent: var(--color-ink-900);
+  --sidebar-accent-foreground: var(--color-ink-050);
+  --sidebar-border: var(--color-ink-700);
+  --sidebar-ring: var(--color-signal-500);
+
+  /* The One-Family Rule: every font token resolves to the same monospace face. */
+  --font-sans: var(--font-plex-mono), ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-heading: var(--font-sans);
+  --font-display: var(--font-sans);
+
+  /* Fallbacks for tokens only really used inside .theme-shell below — defined
+     here too so nothing renders unstyled if a component strays outside it. */
+  --panel: var(--color-ink-900);
+  --signal: var(--color-signal-500);
+}
+
+/*
+  "Engineering console editorial" — the OS-shell landing page ("/") design,
+  ported from a Lovable prototype (retro-chic-showcase). Scoped to this class
+  rather than repointing :root, so /admin, /login, /terminal and /projects
+  stay on "The Man Page" system above untouched. Tailwind's `@theme inline`
+  keys (bg-background, text-primary, font-mono, rounded-lg, etc.) all resolve
+  through a `var(--token)` indirection, so redeclaring the raw custom
+  properties here is enough for every utility class to repaint within this
+  subtree — no separate utility vocabulary needed.
+*/
+.theme-shell {
+  --radius: 0.25rem;
+  --background: oklch(0.145 0.007 285.8);
+  /* Every neutral in this ramp (background/panel/card/border/muted-foreground)
+     carries the same ~286 hue at low chroma — a cool, barely-there tint that
+     sets up --primary's warm amber as the one deliberate accent. The
+     foreground tokens were a flat achromatic white (chroma 0), which broke
+     that cohesion and read slightly glary against the tinted background at
+     full lightness; nudged down to 0.96L and onto the same hue family. */
+  --foreground: oklch(0.96 0.006 285.8);
+  --panel: oklch(0.176 0.007 285.8);
+  --card: oklch(0.176 0.007 285.8);
+  --card-foreground: oklch(0.96 0.006 285.8);
+  --popover: oklch(0.176 0.007 285.8);
+  --popover-foreground: oklch(0.96 0.006 285.8);
+  --primary: oklch(0.702 0.187 45.5);
+  --primary-foreground: oklch(0.145 0.007 285.8);
+  --secondary: oklch(0.24 0.006 286);
+  --secondary-foreground: oklch(0.96 0.006 285.8);
+  --muted: oklch(0.24 0.006 286);
+  --muted-foreground: oklch(0.72 0.014 286);
+  --accent: oklch(0.24 0.006 286);
+  --accent-foreground: oklch(0.96 0.006 285.8);
+  --destructive: oklch(0.62 0.21 25.3);
+  --destructive-foreground: oklch(0.96 0.006 285.8);
+  --signal: oklch(0.75 0.19 149);
+  --border: oklch(0.245 0.006 286);
+  --input: oklch(0.245 0.006 286);
+  --ring: oklch(0.702 0.187 45.5);
+
+  --font-sans: var(--font-jetbrains-mono), ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-display: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-display);
+
+  --ease-mechanical: cubic-bezier(0.2, 1, 0.2, 1);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-panel: var(--panel);
+  --color-signal: var(--signal);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --color-ink-950: var(--color-ink-950);
+  --color-ink-900: var(--color-ink-900);
+  --color-ink-700: var(--color-ink-700);
+  --color-ink-400: var(--color-ink-400);
+  --color-ink-050: var(--color-ink-050);
+  --color-signal-500: var(--color-signal-500);
+  --color-signal-600: var(--color-signal-600);
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-heading: var(--font-heading);
+  --font-display: var(--font-display);
+
+  /* Type hierarchy from DESIGN.md's Typography section. */
+  --text-display: clamp(1.75rem, 1.1rem + 3vw, 3.25rem);
+  --text-display--line-height: 1.15;
+  --text-display--font-weight: 700;
+
+  --text-section-head: 0.9375rem;
+  --text-section-head--line-height: 1.4;
+  --text-section-head--font-weight: 700;
+  --text-section-head--letter-spacing: 0.08em;
+
+  --text-furniture: 0.8125rem;
+  --text-furniture--line-height: 1.4;
+  --text-furniture--letter-spacing: 0.05em;
+
+  --text-body: 1rem;
+  --text-body--line-height: 1.7;
+
+  --text-flag: 0.9375rem;
+  --text-flag--line-height: 1.6;
+
+  /* Shapes: radius stays hairline-thin at every step, never SaaS-card-round. */
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* The Flat Document Rule: deliberately no shadow tokens. */
+}
+
+html {
+  color-scheme: dark;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-mono;
+  }
+}
+
+/*
+  Styling for sanitized README HTML (lib/github/readme.ts renders this at
+  ingest time). Hand-rolled rather than a typography plugin — this stays
+  monospace and flat like everything else in "The Man Page" world, not a
+  generic serif/sans prose default.
+*/
+.prose-terminal {
+  line-height: 1.7;
+}
+.prose-terminal h1,
+.prose-terminal h2,
+.prose-terminal h3 {
+  @apply text-section-head text-foreground mt-8 mb-2 uppercase;
+}
+.prose-terminal p {
+  @apply text-body text-foreground mb-4 max-w-[68ch];
+}
+.prose-terminal a {
+  @apply text-signal-500 hover:text-signal-600 underline;
+}
+.prose-terminal ul,
+.prose-terminal ol {
+  @apply mb-4 max-w-[68ch] pl-6;
+}
+.prose-terminal li {
+  @apply text-body text-foreground;
+}
+.prose-terminal code {
+  @apply bg-ink-900 px-1 py-0.5 text-[0.9em];
+}
+.prose-terminal pre {
+  @apply bg-ink-900 border-border mb-4 overflow-x-auto border p-4;
+}
+.prose-terminal pre code {
+  @apply bg-transparent p-0;
+}
+.prose-terminal img {
+  @apply my-4 max-w-full;
+}
+.prose-terminal blockquote {
+  @apply border-border text-muted-foreground border-l pl-4;
+}
+
+/* content-hidden-at-rest backstop, paired with the <noscript> rule in the
+   root layout: reduced-motion users must see content immediately too. */
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Animations for the .theme-shell OS-shell surface only. */
+@keyframes os-slide-in {
+  from {
+    transform: translate3d(0, 10px, 0);
+    opacity: 0;
+    filter: blur(6px);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes os-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@utility animate-slide {
+  animation: os-slide-in 0.28s var(--ease-mechanical, ease-out) both;
+  will-change: transform, opacity, filter;
+}
+
+/* Children of a pane cascade in, so a section reads as assembling itself. */
+.animate-slide > * {
+  animation: os-slide-in 0.28s var(--ease-mechanical, ease-out) both;
+}
+.animate-slide > *:nth-child(1) {
+  animation-delay: 0.02s;
+}
+.animate-slide > *:nth-child(2) {
+  animation-delay: 0.05s;
+}
+.animate-slide > *:nth-child(3) {
+  animation-delay: 0.08s;
+}
+.animate-slide > *:nth-child(4) {
+  animation-delay: 0.11s;
+}
+.animate-slide > *:nth-child(n + 5) {
+  animation-delay: 0.14s;
+}
+
+@utility animate-blink {
+  animation: os-blink 1s step-end infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-slide,
+  .animate-slide > * {
+    animation: none;
+  }
+  .animate-blink {
+    animation: none;
+  }
+}
