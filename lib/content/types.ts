@@ -80,9 +80,13 @@ export interface ProjectGithub {
   homepage: string | null;
 }
 
+/** "hackathon" gets its own badge on the projects tab/timeline; everything else is "project". */
+export type ProjectKind = "project" | "hackathon";
+
 export interface Project {
   id: string;
   slug: string;
+  kind: ProjectKind;
   title: string;
   tagline: string | null;
   description_md: string | null;
@@ -101,7 +105,13 @@ export interface Project {
 export interface ProjectSource {
   /** "owner/name" on GitHub. */
   repo: string;
+  /** Subdirectory within the repo, for a monorepo holding several projects
+   *  (e.g. "projects/graphics") — the README, and repo_url, are scoped to
+   *  it. Repo-wide stats (stars, languages) don't make sense per-folder, so
+   *  a scoped entry should always set `tech` explicitly. */
+  path?: string;
   slug: string;
+  kind?: ProjectKind;
   /** Overrides the GitHub repo name. */
   title?: string;
   /** Overrides the GitHub description. */

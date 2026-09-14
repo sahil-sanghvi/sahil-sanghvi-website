@@ -1,8 +1,8 @@
 import Link from "next/link";
 import type { ShellProject } from "./os-shell";
 
-function statusFor(p: ShellProject): string {
-  return p.ended_on ? "SHIPPED" : "ACTIVE";
+function badgeFor(p: ShellProject): string {
+  return p.kind === "hackathon" ? "HACKATHON" : "PROJECTS";
 }
 
 export function ProjectsPane({ projects }: { projects: ShellProject[] }) {
@@ -40,7 +40,7 @@ export function ProjectsPane({ projects }: { projects: ShellProject[] }) {
                   </div>
                 )}
                 <span className="absolute top-2 left-2 bg-background/80 px-2 py-0.5 text-[9px] tracking-[0.2em] uppercase text-primary">
-                  {String(i + 1).padStart(2, "0")} / {statusFor(p)}
+                  {String(i + 1).padStart(2, "0")} / {badgeFor(p)}
                 </span>
               </div>
               <div>

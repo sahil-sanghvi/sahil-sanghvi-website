@@ -36,7 +36,15 @@ type RepoMeta = {
   pushed_at: string | null;
 };
 
-export async function fetchRepoData(owner: string, name: string): Promise<ProjectGithub | null> {
+/**
+ * `path` scopes this to one project inside a monorepo (e.g. a repo holding
+ * several course projects, one per subdirectory): the README comes from
+ * that subdirectory, but stars/languages/topics/homepage are repo-wide
+ * numbers that don't mean anything attributed to a single folder, so
+ * they're left at their empty defaults — a scoped ProjectSource should
+ * always set `tech` explicitly instead (see lib/content/static/projects.ts).
+ */
+export async function fetchRepoData(owner: string, name: string, path?: string): Promise<ProjectGithub | null> {
   try {
     const metaRes = await fetch(`https://api.github.com/repos/${owner}/${name}`, {
       headers: ghHeaders(),
@@ -47,25 +55,25 @@ export async function fetchRepoData(owner: string, name: string): Promise<Projec
     const branch = meta.default_branch || "main";
 
     const [languages, readmeMd] = await Promise.all([
-      fetchLanguages(owner, name),
-      fetchReadme(owner, name),
+      path ? Promise.resolve({}) : fetchLanguages(owner, name),
+      fetchReadme(owner, name, path),
     ]);
 
-    const readmeHtml = readmeMd ? await renderReadme(readmeMd, owner, name, branch) : null;
+    const readmeHtml = readmeMd ? await renderReadme(readmeMd, owner, name, branch, path) : null;
 
     return {
       owner,
       repo: name,
       default_branch: branch,
       stars: meta.stargazers_count ?? 0,
-      primary_language: meta.language ?? null,
+      primary_language: path ? null : (meta.language ?? null),
       languages,
-      topics: meta.topics ?? [],
+      topics: path ? [] : (meta.topics ?? []),
       readme_md: readmeMd,
       readme_html: readmeHtml,
       pushed_at: meta.pushed_at,
-      html_url: meta.html_url,
-      homepage: meta.homepage && meta.homepage.trim() ? meta.homepage.trim() : null,
+      html_url: path ? `${meta.html_url}/tree/${branch}/${path}` : meta.html_url,
+      homepage: path ? null : meta.homepage && meta.homepage.trim() ? meta.homepage.trim() : null,
     };
   } catch {
     return null;
@@ -87,9 +95,12 @@ async function fetchLanguages(owner: string, name: string): Promise<Record<strin
 
 const README_CHAR_LIMIT = 200_000;
 
-async function fetchReadme(owner: string, name: string): Promise<string | null> {
+async function fetchReadme(owner: string, name: string, path?: string): Promise<string | null> {
   try {
-    const res = await fetch(`https://api.github.com/repos/${owner}/${name}/readme`, {
+    const url = path
+      ? `https://api.github.com/repos/${owner}/${name}/readme/${path}`
+      : `https://api.github.com/repos/${owner}/${name}/readme`;
+    const res = await fetch(url, {
       headers: ghHeaders({ Accept: "application/vnd.github.raw+json" }),
       next: { revalidate: REVALIDATE },
     });

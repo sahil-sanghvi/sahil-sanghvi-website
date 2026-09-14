@@ -42,6 +42,7 @@ export default async function ProjectDetailPage({
       ) : null}
 
       <div className="mt-6 flex flex-wrap gap-4 text-flag">
+        <span className="text-signal-500">{project.kind === "hackathon" ? "hackathon" : "project"}</span>
         {project.live_url ? (
           <a href={project.live_url} className="text-signal-500 hover:text-signal-600">
             → live

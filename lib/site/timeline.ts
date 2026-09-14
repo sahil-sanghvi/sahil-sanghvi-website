@@ -1,6 +1,6 @@
 import type { Experience, Education, Project } from "@/lib/content";
 
-export type TimelineKind = "work" | "volunteering" | "education" | "project";
+export type TimelineKind = "work" | "volunteering" | "education" | "project" | "hackathon";
 
 export type TimelineItem = {
   id: string;
@@ -21,7 +21,8 @@ const KIND_LABEL: Record<TimelineKind, string> = {
   work: "WORK",
   volunteering: "VOLUNTEER",
   education: "EDU",
-  project: "PROJECT",
+  project: "PROJECTS",
+  hackathon: "HACKATHON",
 };
 
 export function timelineLabel(kind: TimelineKind): string {
@@ -79,7 +80,7 @@ export function buildTimeline(input: {
   for (const p of input.projects) {
     items.push({
       id: p.id,
-      kind: "project",
+      kind: p.kind === "hackathon" ? "hackathon" : "project",
       title: p.title,
       subtitle: p.tagline,
       start: p.started_on,

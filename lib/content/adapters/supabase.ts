@@ -141,6 +141,9 @@ function rowToProject(p: any): Project {
   return {
     id: p.id,
     slug: p.slug,
+    // The DB schema predates the hackathon/project distinction added for
+    // static mode — every automated-mode project renders as "project".
+    kind: "project",
     title: p.title,
     tagline: p.tagline,
     description_md: p.description_md,

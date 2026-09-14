@@ -19,20 +19,26 @@ export async function renderReadme(
   markdown: string,
   owner: string,
   repo: string,
-  branch: string
+  branch: string,
+  path?: string
 ): Promise<string> {
+  // A README fetched from a subdirectory (a monorepo holding several
+  // projects) has relative links resolved against that subdirectory, not
+  // the repo root.
+  const prefix = path ? `${path.replace(/^\/|\/$/g, "")}/` : "";
+
   const rewriteUrls = () => (tree: Root) => {
     visit(tree, "element", (node: Element) => {
       if (node.tagName === "img" && typeof node.properties.src === "string") {
         node.properties.src = resolveRelative(
           node.properties.src,
-          `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/`
+          `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${prefix}`
         );
       }
       if (node.tagName === "a" && typeof node.properties.href === "string") {
         node.properties.href = resolveRelative(
           node.properties.href,
-          `https://github.com/${owner}/${repo}/blob/${branch}/`
+          `https://github.com/${owner}/${repo}/blob/${branch}/${prefix}`
         );
       }
     });
