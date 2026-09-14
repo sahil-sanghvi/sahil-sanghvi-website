@@ -1,14 +1,26 @@
-/** "2025 — PRESENT" / "2024 — 2025" / "2024", from raw date-string columns. */
+const MONTHS = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
+
+/** "YYYY-MM-DD" -> "Mon YYYY". Uses UTC getters since these are date-only
+ *  strings (no time component) — plain getMonth()/getFullYear() can roll a
+ *  day into the wrong month in negative-UTC-offset timezones. */
+function monthYear(dateStr: string): string {
+  const d = new Date(dateStr);
+  return `${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
+}
+
+/** "May 2026 — PRESENT" / "Mar 2018 — Jun 2022" / "Feb 2026", from raw date-string columns. */
 export function formatPeriod(
   startDate: string | null,
   endDate: string | null,
   isCurrent: boolean | null
 ): string {
   if (!startDate) return "";
-  const startYear = new Date(startDate).getFullYear();
-  if (isCurrent || !endDate) return `${startYear} — PRESENT`;
-  const endYear = new Date(endDate).getFullYear();
-  return startYear === endYear ? `${startYear}` : `${startYear} — ${endYear}`;
+  const start = monthYear(startDate);
+  if (isCurrent || !endDate) return `${start} — PRESENT`;
+  const end = monthYear(endDate);
+  return start === end ? start : `${start} — ${end}`;
 }
 
 /** "-fs, --full-stack" -> "Full stack" — derives a heading from a flag-style skill name. */

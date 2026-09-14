@@ -41,7 +41,7 @@ export async function getProjects(): Promise<Project[]> {
         description_md: src.description_md ?? null,
         role: src.role ?? null,
         tech,
-        live_url: gh?.homepage ?? null,
+        live_url: src.live_url ?? gh?.homepage ?? null,
         repo_url: `https://github.com/${src.repo}`,
         started_on: src.started_on ?? null,
         ended_on: src.ended_on ?? null,

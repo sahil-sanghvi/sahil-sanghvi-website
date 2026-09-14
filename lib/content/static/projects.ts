@@ -6,9 +6,12 @@ import type { ProjectSource } from "../types";
  * from GitHub and merges them in. The terminal's `~/projects` directory and
  * `git log` read from this same list.
  *
- * Add a project: append an entry with its `repo` and a `slug`. Everything
- * else is optional — `title`, `tagline`, `tech`, and `description_md`
- * override what GitHub reports. Then commit and push.
+ * Add a project: append an entry with its `repo` and a `slug`, and set
+ * `live_url` to wherever it's actually deployed — GitHub's repo "homepage"
+ * field is only used as a fallback when `live_url` is omitted, and most
+ * repos don't have one set. Everything else is optional — `title`,
+ * `tagline`, `tech`, and `description_md` override what GitHub reports.
+ * Then commit and push.
  */
 export const projectSources: ProjectSource[] = [
   {

@@ -106,6 +106,9 @@ export interface ProjectSource {
   title?: string;
   /** Overrides the GitHub description. */
   tagline?: string;
+  /** Overrides GitHub's repo "homepage" field — set this explicitly for any
+   *  repo without one configured on GitHub (or to point somewhere else). */
+  live_url?: string;
   /** Full prose shown on /projects/[slug] above the README. */
   description_md?: string;
   role?: string;
