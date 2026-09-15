@@ -8,9 +8,15 @@ export type ContactState = { status: "idle" | "sent" | "error"; message: string 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /**
- * Sends the contact form to the profile's public email via Resend.
- * `onboarding@resend.dev` (Resend's default sender) works with no domain
- * verification — set RESEND_FROM_EMAIL once a custom domain is verified.
+ * Sends the contact form via Resend. `onboarding@resend.dev` (Resend's
+ * default sender) needs no domain verification, but in exchange it's
+ * sandboxed: it can only deliver to the email address the Resend *account*
+ * is registered under, not an arbitrary recipient. That's almost never the
+ * same as the public-facing contact email shown on the site, so the
+ * delivery target is RESEND_TO_EMAIL, separate from profile.public_email —
+ * set it to your Resend account's own email for now. Once a custom domain
+ * is verified (resend.com/domains), set RESEND_FROM_EMAIL to an address on
+ * it and RESEND_TO_EMAIL can become any inbox you want, uvic.ca included.
  */
 export async function sendContactMessage(_prev: ContactState, formData: FormData): Promise<ContactState> {
   // Honeypot — real visitors never fill a field named "company" here (it's
@@ -36,7 +42,7 @@ export async function sendContactMessage(_prev: ContactState, formData: FormData
   }
 
   const profile = await getProfile();
-  const to = profile.public_email;
+  const to = process.env.RESEND_TO_EMAIL || profile.public_email;
   if (!to) {
     return { status: "error", message: "No recipient configured yet." };
   }
