@@ -1,4 +1,5 @@
-import type { ShellProfile, ShellSkill } from "./os-shell";
+import Link from "next/link";
+import type { ShellProfile, ShellSkill, ShellProject } from "./os-shell";
 import { titleFromFlag } from "@/lib/site/format";
 import { Timeline } from "./timeline";
 import type { TimelineItem } from "@/lib/site/timeline";
@@ -15,14 +16,17 @@ function SectionRule({ label }: { label: string }) {
 export function ReadmePane({
   profile,
   skills,
+  projects,
   timeline,
 }: {
   profile: ShellProfile | null;
   skills: ShellSkill[];
+  projects: ShellProject[];
   timeline: TimelineItem[];
 }) {
   const headline = profile?.headline ?? "CS student building full end-to-end software products.";
   const [line1, line2] = splitHeadline(headline);
+  const projectBySlug = new Map(projects.map((p) => [p.slug, p]));
 
   return (
     <article className="animate-slide">
@@ -61,6 +65,23 @@ export function ReadmePane({
                 </h3>
                 {s.description ? (
                   <p className="text-[13px] text-muted-foreground leading-relaxed max-w-xl">{s.description}</p>
+                ) : null}
+                {s.related_projects.length > 0 ? (
+                  <p className="text-[11px] text-muted-foreground mt-2">
+                    <span className="uppercase tracking-widest">used in:</span>{" "}
+                    {s.related_projects.map((slug, i) => {
+                      const p = projectBySlug.get(slug);
+                      if (!p) return null;
+                      return (
+                        <span key={slug}>
+                          {i > 0 ? ", " : " "}
+                          <Link href={`/projects/${p.slug}`} className="text-signal-500 hover:text-signal-600">
+                            {p.title}
+                          </Link>
+                        </span>
+                      );
+                    })}
+                  </p>
                 ) : null}
               </div>
             </div>
