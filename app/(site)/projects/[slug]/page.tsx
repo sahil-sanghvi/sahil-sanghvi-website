@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProject, getProjects } from "@/lib/content";
 
@@ -64,7 +65,20 @@ export default async function ProjectDetailPage({
       ) : null}
 
       {project.tech.length > 0 ? (
-        <p className="text-flag text-muted-foreground mt-6">tech: {project.tech.join(", ")}</p>
+        <div className="mt-6">
+          <p className="text-flag text-muted-foreground mb-2">tech:</p>
+          <div className="flex flex-wrap gap-2">
+            {project.tech.map((t) => (
+              <Link
+                key={t}
+                href={`/projects?tech=${encodeURIComponent(t)}`}
+                className="text-flag border border-border px-2 py-1 rounded text-signal-500 hover:text-signal-600 hover:border-signal-500"
+              >
+                {t}
+              </Link>
+            ))}
+          </div>
+        </div>
       ) : null}
 
       {gh?.readme_html ? (
