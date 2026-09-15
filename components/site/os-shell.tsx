@@ -233,7 +233,9 @@ export function OsShell({
 
             <div className="relative flex-1 min-w-0 max-w-4xl mx-auto p-6 md:p-12">
               <div key={active}>
-                {active === "readme" && <ReadmePane profile={profile} skills={skills} timeline={timeline} />}
+                {active === "readme" && (
+                  <ReadmePane profile={profile} skills={skills} projects={projects} timeline={timeline} />
+                )}
                 {active === "experience" && <ExperiencePane experience={experience} />}
                 {active === "projects" && <ProjectsPane projects={projects} />}
                 {active === "contact" && <ContactPane profile={profile} />}

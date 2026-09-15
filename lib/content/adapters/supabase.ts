@@ -52,6 +52,9 @@ export async function getSkills(): Promise<Skill[]> {
     description: s.description,
     category: (s.category as Skill["category"]) ?? null,
     featured: s.featured,
+    // The `skills` table has no related-projects column yet — automated
+    // mode reports none until a future migration + admin-UI field add it.
+    related_projects: [],
   }));
 }
 

@@ -29,6 +29,11 @@ export interface Skill {
   description: string | null;
   category: SkillCategory | null;
   featured: boolean;
+  /** Slugs of entries in projects.ts that demonstrate this skill — rendered
+   *  as "used in" links under the skill's description. Empty when no
+   *  specific project maps cleanly (e.g. a skill only exercised in coursework
+   *  or an internship with no public repo). */
+  related_projects: string[];
 }
 
 export type EmploymentType =
