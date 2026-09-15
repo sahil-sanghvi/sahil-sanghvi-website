@@ -82,7 +82,7 @@ export function OsShell({
   };
 
   return (
-    <div className="theme-shell font-mono min-h-screen flex flex-col bg-background text-foreground">
+    <div className="theme-shell font-mono h-dvh overflow-hidden flex flex-col bg-background text-foreground">
       {/* OS top bar */}
       <header className="h-9 border-b border-border flex items-center px-3 sm:px-4 justify-between bg-panel/60 backdrop-blur-md sticky top-0 z-50">
         <div className="flex min-w-0 items-center gap-4 sm:gap-6">
