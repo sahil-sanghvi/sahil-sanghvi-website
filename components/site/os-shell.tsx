@@ -100,6 +100,36 @@ export function OsShell({
           </nav>
         </div>
         <div className="flex shrink-0 items-center gap-4 text-[10px] text-muted-foreground">
+          {profile?.resume_url ? (
+            <a
+              href={profile.resume_url}
+              target="_blank"
+              rel="noreferrer"
+              className="hidden sm:inline hover:text-primary transition-colors"
+            >
+              Résumé
+            </a>
+          ) : null}
+          {profile?.socials?.GitHub ? (
+            <a
+              href={profile.socials.GitHub}
+              target="_blank"
+              rel="noreferrer"
+              className="hidden sm:inline hover:text-primary transition-colors"
+            >
+              GitHub
+            </a>
+          ) : null}
+          {profile?.socials?.LinkedIn ? (
+            <a
+              href={profile.socials.LinkedIn}
+              target="_blank"
+              rel="noreferrer"
+              className="hidden sm:inline hover:text-primary transition-colors"
+            >
+              LinkedIn
+            </a>
+          ) : null}
           <span className="hidden sm:inline">{metrics.available ? "OPEN TO WORK" : "NOT AVAILABLE"}</span>
           <Clock />
         </div>
