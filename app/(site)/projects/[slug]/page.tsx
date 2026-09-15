@@ -72,7 +72,7 @@ export default async function ProjectDetailPage({
               <Link
                 key={t}
                 href={`/projects?tech=${encodeURIComponent(t)}`}
-                className="text-flag border border-border px-2 py-1 rounded text-signal-500 hover:text-signal-600 hover:border-signal-500"
+                className="text-flag border border-border px-2 py-1 text-signal-500 hover:text-signal-600 hover:border-signal-500"
               >
                 {t}
               </Link>
