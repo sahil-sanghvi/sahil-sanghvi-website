@@ -56,36 +56,37 @@ export function ReadmePane({
       <SectionRule label="Options" />
       {skills.length > 0 ? (
         <div className="space-y-8 mb-20">
-          {skills.map((s) => (
-            <div key={s.id} className="grid gap-2 md:grid-cols-[220px_minmax(0,1fr)] md:gap-8">
-              <div className="text-primary text-xs pt-0.5">{s.name}</div>
-              <div>
-                <h3 className="font-display text-base font-extrabold uppercase tracking-tight mb-1">
-                  {titleFromFlag(s.name)}
-                </h3>
-                {s.description ? (
-                  <p className="text-[13px] text-muted-foreground leading-relaxed max-w-xl">{s.description}</p>
-                ) : null}
-                {s.related_projects.length > 0 ? (
-                  <p className="text-[11px] text-muted-foreground mt-2">
-                    <span className="uppercase tracking-widest">used in:</span>{" "}
-                    {s.related_projects.map((slug, i) => {
-                      const p = projectBySlug.get(slug);
-                      if (!p) return null;
-                      return (
-                        <span key={slug}>
+          {skills.map((s) => {
+            const usedIn = s.related_projects
+              .map((slug) => projectBySlug.get(slug))
+              .filter((p): p is ShellProject => p !== undefined);
+            return (
+              <div key={s.id} className="grid gap-2 md:grid-cols-[220px_minmax(0,1fr)] md:gap-8">
+                <div className="text-primary text-xs pt-0.5">{s.name}</div>
+                <div>
+                  <h3 className="font-display text-base font-extrabold uppercase tracking-tight mb-1">
+                    {titleFromFlag(s.name)}
+                  </h3>
+                  {s.description ? (
+                    <p className="text-[13px] text-muted-foreground leading-relaxed max-w-xl">{s.description}</p>
+                  ) : null}
+                  {usedIn.length > 0 ? (
+                    <p className="text-[11px] text-muted-foreground mt-2">
+                      <span className="uppercase tracking-widest">used in:</span>{" "}
+                      {usedIn.map((p, i) => (
+                        <span key={p.slug}>
                           {i > 0 ? ", " : " "}
                           <Link href={`/projects/${p.slug}`} className="text-signal-500 hover:text-signal-600">
                             {p.title}
                           </Link>
                         </span>
-                      );
-                    })}
-                  </p>
-                ) : null}
+                      ))}
+                    </p>
+                  ) : null}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       ) : (
         <p className="text-[13px] text-muted-foreground leading-relaxed mb-20">No skills listed yet.</p>

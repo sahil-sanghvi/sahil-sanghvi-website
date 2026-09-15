@@ -2,19 +2,37 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getProjects } from "@/lib/content";
 
-export const metadata: Metadata = {
-  title: "Projects — sahil-sanghvi(1)",
-};
-
 export const revalidate = 3600;
+
+type ProjectsSearchParams = Promise<{ tech?: string | string[] }>;
+
+function resolveTech(raw: string | string[] | undefined): string | undefined {
+  return Array.isArray(raw) ? raw[0] : raw;
+}
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: ProjectsSearchParams;
+}): Promise<Metadata> {
+  const tech = resolveTech((await searchParams).tech);
+
+  if (!tech) {
+    return { title: "Projects — sahil-sanghvi(1)" };
+  }
+
+  return {
+    title: `Projects · ${tech} — sahil-sanghvi(1)`,
+    alternates: { canonical: "/projects" },
+  };
+}
 
 export default async function ProjectsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tech?: string }>;
+  searchParams: ProjectsSearchParams;
 }) {
-  const params = await searchParams;
-  const tech = params.tech;
+  const tech = resolveTech((await searchParams).tech);
   const projects = await getProjects();
 
   const filtered = tech ? projects.filter((p) => p.tech.includes(tech)) : projects;
@@ -37,7 +55,7 @@ export default async function ProjectsPage({
           <div className="flex flex-col gap-6">
             {filtered.map((p) => (
               <div key={p.slug}>
-                <Link href={`/projects/${p.slug}`} className="group">
+                <Link href={`/projects/${p.slug}`} className="group block">
                   <p className="text-body text-foreground group-hover:text-signal-500">
                     {p.title}
                     {p.kind === "hackathon" ? (
