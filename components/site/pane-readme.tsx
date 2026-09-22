@@ -18,11 +18,13 @@ export function ReadmePane({
   skills,
   projects,
   timeline,
+  onContactClick,
 }: {
   profile: ShellProfile | null;
   skills: ShellSkill[];
   projects: ShellProject[];
   timeline: TimelineItem[];
+  onContactClick: () => void;
 }) {
   const headline = profile?.headline ?? "CS student building full end-to-end software products.";
   const [line1, line2] = splitHeadline(headline);
@@ -48,6 +50,46 @@ export function ReadmePane({
           <div className="hidden sm:block h-px flex-1 bg-border" />
         </div>
       </header>
+
+      <div className="flex flex-wrap gap-3 mb-10">
+        {profile?.resume_url ? (
+          <a
+            href={profile.resume_url}
+            target="_blank"
+            rel="noreferrer"
+            className="border border-border px-5 py-2.5 text-xs font-bold uppercase tracking-widest hover:border-primary hover:text-primary transition-colors"
+          >
+            Résumé
+          </a>
+        ) : null}
+        {profile?.socials?.LinkedIn ? (
+          <a
+            href={profile.socials.LinkedIn}
+            target="_blank"
+            rel="noreferrer"
+            className="border border-border px-5 py-2.5 text-xs font-bold uppercase tracking-widest hover:border-primary hover:text-primary transition-colors"
+          >
+            LinkedIn
+          </a>
+        ) : null}
+        {profile?.socials?.GitHub ? (
+          <a
+            href={profile.socials.GitHub}
+            target="_blank"
+            rel="noreferrer"
+            className="border border-border px-5 py-2.5 text-xs font-bold uppercase tracking-widest hover:border-primary hover:text-primary transition-colors"
+          >
+            GitHub
+          </a>
+        ) : null}
+        <button
+          type="button"
+          onClick={onContactClick}
+          className="bg-primary text-primary-foreground px-5 py-2.5 text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-opacity"
+        >
+          Contact me
+        </button>
+      </div>
 
       {profile?.bio_md ? (
         <p className="text-muted-foreground leading-relaxed max-w-2xl text-sm mb-16">{profile.bio_md}</p>
