@@ -77,22 +77,6 @@ export const experience: Experience[] = [
     tech: [],
   },
   {
-    id: "smoke-2-snack",
-    org: "Smoke 2 Snack Victoria",
-    role: "Sales Associate",
-    employment_type: "part-time",
-    location: "Victoria, BC",
-    start_date: "2025-06-01",
-    end_date: "2026-04-01",
-    is_current: false,
-    summary_md: "Customer service in a fast-paced retail environment, balanced alongside full-time studies.",
-    highlights: [
-      "De-escalated difficult customer situations with active listening and problem-solving.",
-      "Helped coworkers pick up new tools to better serve customers.",
-    ],
-    tech: [],
-  },
-  {
     id: "umang-isa",
     org: "UVic UMANG Indian Students Association",
     role: "Vice President",
