@@ -36,6 +36,14 @@ export interface Skill {
   related_projects: string[];
 }
 
+/** One category in the Skills.yaml tab — a raw, comprehensive technology
+ *  list straight from the résumé (distinct from `Skill`, which is the
+ *  curated flag-style list in the README's OPTIONS section). */
+export interface SkillGroup {
+  category: string;
+  items: string[];
+}
+
 export type EmploymentType =
   | "full-time"
   | "part-time"

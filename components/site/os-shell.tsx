@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import type { Profile, Skill, Experience, Project } from "@/lib/content";
+import type { Profile, Skill, Experience, Project, SkillGroup } from "@/lib/content";
 import type { TimelineItem } from "@/lib/site/timeline";
 import { aggregateLanguages } from "@/lib/site/format";
 import { Scene3DBackground } from "./scene-3d-background";
 import { ReadmePane } from "./pane-readme";
 import { ExperiencePane } from "./pane-experience";
 import { ProjectsPane } from "./pane-projects";
+import { SkillsPane } from "./pane-skills";
 import { ContactPane } from "./pane-contact";
 
 export type ShellProfile = Profile;
@@ -17,12 +18,13 @@ export type ShellExperience = Experience;
 export type ShellProject = Project;
 export type ShellMetrics = { repos: number; stars: number; available: boolean };
 
-type FileId = "readme" | "experience" | "projects" | "contact";
+type FileId = "readme" | "experience" | "projects" | "skills" | "contact";
 
 const FILES: { id: FileId; name: string; kind: string; path: string }[] = [
   { id: "readme", name: "README.md", kind: "MD", path: "~/portfolio/README.md" },
   { id: "experience", name: "Experience.tsx", kind: "TS", path: "~/portfolio/src/career/Experience.tsx" },
   { id: "projects", name: "Projects.json", kind: "JSON", path: "~/portfolio/src/lab/Projects.json" },
+  { id: "skills", name: "Skills.yaml", kind: "YAML", path: "~/portfolio/Skills.yaml" },
   { id: "contact", name: "contact.sh", kind: "SH", path: "~/portfolio/bin/contact.sh" },
 ];
 
@@ -40,6 +42,7 @@ function Clock() {
 export function OsShell({
   profile,
   skills,
+  technicalSkills,
   experience,
   projects,
   timeline,
@@ -47,6 +50,7 @@ export function OsShell({
 }: {
   profile: ShellProfile | null;
   skills: ShellSkill[];
+  technicalSkills: SkillGroup[];
   experience: ShellExperience[];
   projects: ShellProject[];
   timeline: TimelineItem[];
@@ -244,6 +248,7 @@ export function OsShell({
                 )}
                 {active === "experience" && <ExperiencePane experience={experience} />}
                 {active === "projects" && <ProjectsPane projects={projects} />}
+                {active === "skills" && <SkillsPane groups={technicalSkills} />}
                 {active === "contact" && <ContactPane profile={profile} />}
               </div>
             </div>

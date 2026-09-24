@@ -23,8 +23,10 @@ export const projectSources: ProjectSource[] = [
     slug: "precheck-ai",
     kind: "hackathon",
     title: "PreCheck.ai",
-    tagline: "Pre-visit clinical intake triage — nwHacks 2026 (Best Use of Gemini API finalist).",
-    tech: ["TypeScript", "React", "Python", "Gemini API"],
+    tagline: "AI-powered health insurance claims assistant — Runner-Up (Google Gemini Track) & Best .tech Domain, nwHacks 2026.",
+    description_md:
+      "Shipped a healthtech MVP among 100+ competing teams in under 24 hours, leading a 4-person team. A 4-stage ML validation pipeline — Gemini Vision OCR, RAG-based policy retrieval, HistGradientBoosting risk scoring (0–100 denial probability), and a remediation dashboard with citation-level fixes — covering the full claim lifecycle across Prevention, Pre-Submission, and Appeal flows, validated against 10+ required fields.",
+    tech: ["React", "TypeScript", "FastAPI", "scikit-learn", "RAG"],
     featured: true,
   },
   {
@@ -49,8 +51,10 @@ export const projectSources: ProjectSource[] = [
     slug: "exodetect",
     kind: "hackathon",
     title: "ExoDetect",
-    tagline: "AI-powered exoplanet detection on NASA Kepler mission data — NASA Space Apps Challenge 2025.",
-    tech: ["TypeScript", "Python", "FastAPI", "Machine Learning"],
+    tagline: "97.3% accuracy classifying exoplanets from NASA light-curve data — People's Choice Award, NASA International SpaceApps Challenge 2025.",
+    description_md:
+      "Achieved 97.3% accuracy classifying exoplanets from NASA light-curve data with ensemble ML models, outperforming baselines by 40%. Cut API latency under 180ms and preprocessing compute time by 72% with a full-stack FastAPI + Docker + Next.js pipeline using vectorization and caching.",
+    tech: ["TypeScript", "Next.js", "FastAPI", "XGBoost", "LightGBM"],
   },
   {
     repo: "sahil-sanghvi/palendar",

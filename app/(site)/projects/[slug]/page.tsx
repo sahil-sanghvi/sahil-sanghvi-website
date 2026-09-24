@@ -18,9 +18,13 @@ export async function generateMetadata({
   const { slug } = await params;
   const project = await getProject(slug);
   if (!project) return {};
+  const description = project.tagline ?? undefined;
   return {
     title: `${project.title} — sahil-sanghvi(1)`,
-    description: project.tagline ?? undefined,
+    description,
+    alternates: { canonical: `/projects/${slug}` },
+    openGraph: { title: project.title, description, url: `/projects/${slug}` },
+    twitter: { title: project.title, description },
   };
 }
 

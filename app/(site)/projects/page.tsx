@@ -18,7 +18,11 @@ export async function generateMetadata({
   const tech = resolveTech((await searchParams).tech);
 
   if (!tech) {
-    return { title: "Projects — sahil-sanghvi(1)" };
+    return {
+      title: "Projects — sahil-sanghvi(1)",
+      description: "Real, working projects — hackathon builds and shipped code, each linked to its source.",
+      alternates: { canonical: "/projects" },
+    };
   }
 
   return {

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { IBM_Plex_Mono, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import { MotionProvider } from "@/components/motion/motion-provider";
 import { siteUrl } from "@/lib/site-url";
-import { getProfile } from "@/lib/content";
+import { getProfile, getExperience, getEducation } from "@/lib/content";
 import "./globals.css";
 
 // The whole system is set in one monospace family (DESIGN.md: The One-Family Rule).
@@ -41,6 +41,7 @@ export const metadata: Metadata = {
     template: "%s",
   },
   description,
+  alternates: { canonical: "/" },
   openGraph: {
     title: "sahil-sanghvi(1)",
     description,
@@ -60,7 +61,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const profile = await getProfile();
+  const [profile, experience, education] = await Promise.all([getProfile(), getExperience(), getEducation()]);
+  const current = experience.find((e) => e.is_current);
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Person",
@@ -69,6 +71,18 @@ export default async function RootLayout({
     description: profile.headline,
     sameAs: Object.values(profile.socials),
     ...(profile.public_email ? { email: profile.public_email } : {}),
+    ...(profile.location ? { address: { "@type": "PostalAddress", addressLocality: profile.location } } : {}),
+    ...(current
+      ? {
+          jobTitle: current.role,
+          worksFor: { "@type": "Organization", name: current.org },
+        }
+      : {}),
+    ...(education.length > 0
+      ? {
+          alumniOf: education.map((e) => ({ "@type": "CollegeOrUniversity", name: e.institution })),
+        }
+      : {}),
   };
 
   return (

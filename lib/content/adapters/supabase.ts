@@ -1,6 +1,6 @@
 import "server-only";
 import { createPublicClient } from "@/lib/supabase/public";
-import type { Profile, Skill, Experience, Education, Project, ProjectGithub, EmploymentType } from "../types";
+import type { Profile, Skill, Experience, Education, Project, ProjectGithub, EmploymentType, SkillGroup } from "../types";
 
 /**
  * CONTENT_SOURCE=supabase implementations — the "automated mode" reads the
@@ -56,6 +56,12 @@ export async function getSkills(): Promise<Skill[]> {
     // mode reports none until a future migration + admin-UI field add it.
     related_projects: [],
   }));
+}
+
+export async function getTechnicalSkills(): Promise<SkillGroup[]> {
+  // Not modeled in the DB yet — the Skills.yaml tab is static-mode only for
+  // now (see lib/content/static/technical-skills.ts).
+  return [];
 }
 
 export async function getExperience(): Promise<Experience[]> {

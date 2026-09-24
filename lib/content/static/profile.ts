@@ -11,7 +11,7 @@ export const profile: Profile = {
   full_name: "Sahil Sanghvi",
   headline: "I build the whole thing — the product, and the pipeline that runs it.",
   bio_md:
-    "Computer Science student at the University of Victoria (Software Systems specialization). I build complete software products — the app, the data pipeline behind it, and the automation that keeps it running without me. I recently wrapped up an ML Research Fellowship with RBC Borealis' Let's Solve It cohort and an AI internship at Protean eGov Technologies. Before university I taught Python and C/C++ to 500+ students, and I lead UVic's UMANG Indian Students Association as Vice President.",
+    "Computer Science student at the University of Victoria (Software Systems specialization). I build complete software products — the app, the data pipeline behind it, and the automation that keeps it running without me. Right now I'm Head Software Engineer at a stealth startup, leading a team of 3 building three products end-to-end. Before that, an ML Research Fellowship with RBC Borealis' Let's Solve It cohort and an AI internship at Protean eGov Technologies. Before university I taught Python and C/C++ to 500+ students, and I lead UVic's UMANG Indian Students Association as Vice President.",
   location: "Victoria, BC",
   public_email: "ssanghvi@uvic.ca",
   socials: {
