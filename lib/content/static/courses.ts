@@ -236,8 +236,8 @@ export const courses: Course[] = [
     title: "Programming Languages",
     term: "Spring 2026",
     year: 3,
-    summary: "Ruby and APL assignment solutions — not yet published as a repo.",
-    repo_url: null,
+    summary: "5 assignments across OCaml, Racket, Ruby, and APL — functional sets, streams, a from-scratch interpreter, and DNA-sequence analysis.",
+    repo_url: "https://github.com/sahil-sanghvi/programming-languages",
   },
   {
     id: "csc-360",

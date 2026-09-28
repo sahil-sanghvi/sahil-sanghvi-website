@@ -208,4 +208,11 @@ export const projectSources: ProjectSource[] = [
     tagline: "CAD models and print-ready files from a hands-on 3D design and printing breadth course.",
     tech: ["CAD", "3D Printing"],
   },
+  {
+    repo: "sahil-sanghvi/programming-languages",
+    slug: "programming-languages",
+    title: "Programming Languages",
+    tagline: "Five assignments across OCaml, Racket, Ruby, and APL — functional sets, streams, an interpreter built in two paradigms, and DNA-sequence analysis.",
+    tech: ["OCaml", "Racket", "Ruby", "APL"],
+  },
 ];
