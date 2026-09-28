@@ -126,6 +126,7 @@ export interface Course {
   year: number; // 1-4, which year of the degree — used to group the list
   summary: string; // one line — what the repo contains, or why there isn't one
   repo_url: string | null; // null when there's no dedicated coursework repo (e.g. a math/writing requirement)
+  project_slug?: string; // set when the coursework shipped as its own curated project (see lib/content/static/projects.ts) instead of a plain repo
 }
 
 /** A curated project entry in lib/content/static/projects.ts. */

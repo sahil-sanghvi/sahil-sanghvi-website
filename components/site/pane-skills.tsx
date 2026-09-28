@@ -10,8 +10,8 @@ export function SkillsPane({ groups }: { groups: SkillGroup[] }) {
           <span className="text-primary">and then some.</span>
         </h1>
         <p className="text-sm text-muted-foreground max-w-xl leading-relaxed">
-          Every language, framework, and tool I&apos;ve actually shipped with — straight from the résumé, grouped
-          by where it&apos;s used.
+          Every language, framework, and tool I&apos;ve actually shipped with — across the résumé, every project,
+          and every course, grouped by where it&apos;s used.
         </p>
       </header>
 

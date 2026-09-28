@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { ShellCourse } from "./os-shell";
 
 const YEAR_LABEL: Record<number, string> = {
@@ -19,7 +20,14 @@ function CourseRow({ c }: { c: ShellCourse }) {
           </span>
         ) : null}
       </div>
-      {c.repo_url ? (
+      {c.project_slug ? (
+        <Link
+          href={`/projects/${c.project_slug}`}
+          className="shrink-0 border border-border px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest hover:border-primary hover:text-primary transition-colors"
+        >
+          View project
+        </Link>
+      ) : c.repo_url ? (
         <a
           href={c.repo_url}
           target="_blank"

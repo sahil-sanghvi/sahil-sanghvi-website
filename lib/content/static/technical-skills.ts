@@ -1,22 +1,63 @@
 import type { SkillGroup } from "../types";
 
 /**
- * The "Technical Skills" section straight from the résumé (public/resume.pdf),
- * grouped exactly as it's written there. Rendered on the Skills.yaml tab.
- * Keep this in sync with the résumé — when it changes, update here too.
+ * The "Technical Skills" section rendered on the Skills.yaml tab. Originally
+ * transcribed straight from the résumé (public/resume.pdf); now kept in sync
+ * with the résumé *and* cross-referenced against every project, course, and
+ * role in lib/content/static/{projects,courses,experience}.ts so nothing
+ * actually shipped is missing here. When any of those change, check this
+ * file too.
  */
 export const technicalSkillGroups: SkillGroup[] = [
   {
     category: "Languages",
-    items: ["Python", "Java", "C#", "JavaScript", "TypeScript", "Go", "C", "C++", "SQL"],
+    items: [
+      "Python",
+      "Java",
+      "C#",
+      "JavaScript",
+      "TypeScript",
+      "Go",
+      "C",
+      "C++",
+      "SQL",
+      "PHP",
+      "R",
+      "OCaml",
+      "Racket",
+      "Ruby",
+      "APL",
+      "AVR Assembly",
+    ],
   },
   {
     category: "Frontend & Web",
-    items: ["React.js", "Next.js", "Tailwind CSS", "HTML5", "CSS3", "Recharts", "Chart.js", "Responsive Design"],
+    items: [
+      "React.js",
+      "Next.js",
+      "Tailwind CSS",
+      "HTML5",
+      "CSS3",
+      "Recharts",
+      "Chart.js",
+      "Responsive Design",
+      "PyQt6",
+      "WordPress",
+    ],
   },
   {
     category: "Backend & APIs",
-    items: ["FastAPI", "RESTful APIs", "Pydantic", "SQLAlchemy", "Alembic", "Node.js", ".NET 8", "Microservices"],
+    items: [
+      "FastAPI",
+      "RESTful APIs",
+      "Pydantic",
+      "SQLAlchemy",
+      "Alembic",
+      "Node.js",
+      ".NET 8",
+      "Microservices",
+      "Razorpay",
+    ],
   },
   {
     category: "AI/ML & Data",
@@ -33,11 +74,14 @@ export const technicalSkillGroups: SkillGroup[] = [
       "NumPy",
       "Pandas",
       "pgvector",
+      "Jupyter",
+      "Streamlit",
+      "UMAP",
     ],
   },
   {
     category: "Databases & Caching",
-    items: ["PostgreSQL", "SQL Server", "MySQL", "Redis", "Tableau", "Power BI"],
+    items: ["PostgreSQL", "SQL Server", "MySQL", "SQLite", "Redis", "Tableau", "Power BI"],
   },
   {
     category: "Cloud & DevOps",
@@ -50,11 +94,13 @@ export const technicalSkillGroups: SkillGroup[] = [
       "CI/CD",
       "Git/GitHub",
       "Unix/Linux",
+      "POSIX",
+      "Microsoft Entra ID (OIDC/SSO, RBAC)",
     ],
   },
   {
     category: "Testing",
-    items: ["JUnit", "pytest", "Selenium IDE", "TDD", "Mutation Testing", "Property-Based Testing"],
+    items: ["JUnit", "jqwik", "pytest", "Selenium IDE", "TDD", "Mutation Testing", "Property-Based Testing"],
   },
   {
     category: "AI-Assisted Dev",

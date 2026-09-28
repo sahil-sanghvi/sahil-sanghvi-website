@@ -211,6 +211,7 @@ export const courses: Course[] = [
     year: 3,
     summary: "Built Palendar, a calendar app, for this course — shipped as its own project rather than a coursework repo.",
     repo_url: null,
+    project_slug: "palendar",
   },
   {
     id: "seng-321",
