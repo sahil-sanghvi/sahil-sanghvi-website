@@ -22,7 +22,7 @@ export const courses: Course[] = [
   {
     id: "writ-109",
     code: "WRIT 109",
-    title: "The Writer's World in Books and Film",
+    title: "Writer's World: Books + Film — Marvel",
     term: "Fall 2023",
     year: 1,
     summary: "Writing elective — no code.",
@@ -58,7 +58,7 @@ export const courses: Course[] = [
   {
     id: "math-122",
     code: "MATH 122",
-    title: "Precalculus Mathematics",
+    title: "Logic and Foundations",
     term: "Spring 2024",
     year: 1,
     summary: "Math requirement — no code.",
@@ -123,7 +123,7 @@ export const courses: Course[] = [
   {
     id: "math-202",
     code: "MATH 202",
-    title: "Calculus III",
+    title: "Intermediate Calculus for CSC and EOS",
     term: "Fall 2024",
     year: 2,
     summary: "Math requirement — no code.",
@@ -257,8 +257,26 @@ export const courses: Course[] = [
     summary: "CAD models and print-ready files from a 3D design/printing breadth course.",
     repo_url: "https://github.com/sahil-sanghvi/3d-printing-rapid-prototyping-and-design",
   },
+  {
+    id: "csc-320",
+    code: "CSC 320",
+    title: "Foundations of Computer Science",
+    term: "Spring 2026",
+    year: 3,
+    summary: "No coursework artifacts kept.",
+    repo_url: null,
+  },
 
   // ── Year 4 (in progress) ──
+  {
+    id: "csc-321",
+    code: "CSC 321",
+    title: "Introduction to Artificial Intelligence",
+    term: "Fall 2026",
+    year: 4,
+    summary: "In progress — no assignments published yet.",
+    repo_url: null,
+  },
   {
     id: "csc-466",
     code: "CSC 466",
@@ -269,9 +287,18 @@ export const courses: Course[] = [
     repo_url: null,
   },
   {
+    id: "csc-485a",
+    code: "CSC 485A",
+    title: "Topics in Systems: GPU Computing",
+    term: "Fall 2026",
+    year: 4,
+    summary: "In progress — no assignments published yet.",
+    repo_url: null,
+  },
+  {
     id: "seng-365",
     code: "SENG 365",
-    title: "Software Systems Solutions",
+    title: "Software Systems Development",
     term: "Fall 2026",
     year: 4,
     summary: "In progress — a multi-milestone software project, not yet published.",
