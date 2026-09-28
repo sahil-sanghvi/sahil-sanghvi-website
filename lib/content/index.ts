@@ -1,10 +1,10 @@
 import "server-only";
 import { cache } from "react";
-import type { Profile, Skill, Experience, Education, Project, SkillGroup } from "./types";
+import type { Profile, Skill, Experience, Education, Project, SkillGroup, Course } from "./types";
 import * as staticSource from "./adapters/static";
 import * as supabaseSource from "./adapters/supabase";
 
-export type { Profile, Skill, Experience, Education, Project, ProjectGithub, SkillGroup } from "./types";
+export type { Profile, Skill, Experience, Education, Project, ProjectGithub, SkillGroup, Course } from "./types";
 
 /**
  * "static" (default) reads committed files in lib/content/static/*, hydrating
@@ -22,6 +22,7 @@ export const getSkills = cache((): Promise<Skill[]> => source.getSkills());
 export const getTechnicalSkills = cache((): Promise<SkillGroup[]> => source.getTechnicalSkills());
 export const getExperience = cache((): Promise<Experience[]> => source.getExperience());
 export const getEducation = cache((): Promise<Education[]> => source.getEducation());
+export const getCourses = cache((): Promise<Course[]> => source.getCourses());
 export const getProjects = cache((): Promise<Project[]> => source.getProjects());
 
 export const getProject = cache(async (slug: string): Promise<Project | null> => {

@@ -1,11 +1,12 @@
 import "server-only";
-import type { Profile, Skill, Experience, Education, Project, SkillGroup } from "../types";
+import type { Profile, Skill, Experience, Education, Project, SkillGroup, Course } from "../types";
 import { profile } from "../static/profile";
 import { skills } from "../static/skills";
 import { technicalSkillGroups } from "../static/technical-skills";
 import { experience } from "../static/experience";
 import { education } from "../static/education";
 import { projectSources } from "../static/projects";
+import { courses } from "../static/courses";
 import { fetchRepoData } from "../github";
 
 export async function getProfile(): Promise<Profile> {
@@ -26,6 +27,10 @@ export async function getExperience(): Promise<Experience[]> {
 
 export async function getEducation(): Promise<Education[]> {
   return education;
+}
+
+export async function getCourses(): Promise<Course[]> {
+  return courses;
 }
 
 export async function getProjects(): Promise<Project[]> {

@@ -114,6 +114,20 @@ export interface Project {
   project_github: ProjectGithub | null;
 }
 
+/** One row in the Courses.yaml tab — a UVic course with its own dedicated
+ *  coursework repo (see lib/content/static/courses.ts). Distinct from
+ *  `Project`: courses are academic record, not portfolio work, so they get
+ *  their own tab instead of living in the Timeline or the Projects tab. */
+export interface Course {
+  id: string; // stable slug, e.g. "csc-110"
+  code: string; // "CSC 110"
+  title: string; // official UVic calendar title, e.g. "Fundamentals of Programming I"
+  term: string | null; // "Fall 2023", or null if not tracked
+  year: number; // 1-4, which year of the degree — used to group the list
+  summary: string; // one line — what the repo contains, or why there isn't one
+  repo_url: string | null; // null when there's no dedicated coursework repo (e.g. a math/writing requirement)
+}
+
 /** A curated project entry in lib/content/static/projects.ts. */
 export interface ProjectSource {
   /** "owner/name" on GitHub. */

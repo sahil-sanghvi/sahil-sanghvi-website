@@ -14,7 +14,7 @@ export const skills: Skill[] = [
       "My first language, at 14 — I taught it to 500+ students. Now it's for ML pipelines, data analysis, and glue.",
     category: "language",
     featured: true,
-    related_projects: ["island-insight", "http-client", "tcp-analyzer"],
+    related_projects: ["island-insight", "network-protocol-tools"],
   },
   {
     id: "c-cpp",
@@ -22,7 +22,7 @@ export const skills: Skill[] = [
     description: "C and C++ — the systems fundamentals I taught alongside Python for four years.",
     category: "language",
     featured: true,
-    related_projects: ["rasterizer", "recursive-raytracer", "pman-process-manager"],
+    related_projects: ["graphics-from-scratch", "systems-programming-toolkit"],
   },
   {
     id: "typescript",

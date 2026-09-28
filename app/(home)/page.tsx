@@ -1,5 +1,13 @@
 import type { Metadata } from "next";
-import { getProfile, getSkills, getTechnicalSkills, getExperience, getEducation, getProjects } from "@/lib/content";
+import {
+  getProfile,
+  getSkills,
+  getTechnicalSkills,
+  getExperience,
+  getEducation,
+  getProjects,
+  getCourses,
+} from "@/lib/content";
 import { OsShell } from "@/components/site/os-shell";
 import { buildTimeline } from "@/lib/site/timeline";
 
@@ -27,13 +35,14 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const [profile, skills, technicalSkills, experience, education, projects] = await Promise.all([
+  const [profile, skills, technicalSkills, experience, education, projects, courses] = await Promise.all([
     getProfile(),
     getSkills(),
     getTechnicalSkills(),
     getExperience(),
     getEducation(),
     getProjects(),
+    getCourses(),
   ]);
 
   const stars = projects.reduce((sum, p) => sum + (p.project_github?.stars ?? 0), 0);
@@ -46,6 +55,7 @@ export default async function HomePage() {
       technicalSkills={technicalSkills}
       experience={experience}
       projects={projects}
+      courses={courses}
       timeline={timeline}
       metrics={{
         repos: projects.length,

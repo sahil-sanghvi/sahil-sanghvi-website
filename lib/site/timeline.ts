@@ -78,9 +78,13 @@ export function buildTimeline(input: {
   }
 
   for (const p of input.projects) {
+    // Ordinary projects live in the Projects tab now, not the README
+    // timeline — only hackathon wins (achievements, not portfolio work)
+    // still show up here alongside work/education/volunteering.
+    if (p.kind !== "hackathon") continue;
     items.push({
       id: p.id,
-      kind: p.kind === "hackathon" ? "hackathon" : "project",
+      kind: "hackathon",
       title: p.title,
       subtitle: p.tagline,
       start: p.started_on,
