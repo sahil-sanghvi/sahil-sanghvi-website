@@ -8,34 +8,28 @@ const YEAR_LABEL: Record<number, string> = {
 };
 
 function CourseRow({ c }: { c: ShellCourse }) {
-  const inner = (
-    <>
-      <div className="flex items-baseline gap-3">
+  return (
+    <div className="flex items-center justify-between gap-4 py-5 px-2 -mx-2">
+      <div className="flex items-baseline gap-3 min-w-0">
         <span className="text-[11px] text-primary tabular-nums shrink-0">{c.code}</span>
-        <span className="text-sm text-foreground">{c.title}</span>
+        <span className="text-sm text-foreground truncate">{c.title}</span>
         {c.term ? (
-          <span className="ml-auto text-[10px] text-muted-foreground uppercase tracking-widest shrink-0">
+          <span className="text-[10px] text-muted-foreground uppercase tracking-widest shrink-0 hidden sm:inline">
             {c.term}
           </span>
         ) : null}
       </div>
-      <p className="text-[12px] text-muted-foreground leading-relaxed">{c.summary}</p>
-    </>
-  );
-
-  if (!c.repo_url) {
-    return <div className="flex flex-col gap-1 py-5 px-2 -mx-2">{inner}</div>;
-  }
-
-  return (
-    <a
-      href={c.repo_url}
-      target="_blank"
-      rel="noreferrer"
-      className="group flex flex-col gap-1 py-5 hover:bg-foreground/5 transition-colors px-2 -mx-2"
-    >
-      {inner}
-    </a>
+      {c.repo_url ? (
+        <a
+          href={c.repo_url}
+          target="_blank"
+          rel="noreferrer"
+          className="shrink-0 border border-border px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest hover:border-primary hover:text-primary transition-colors"
+        >
+          View repo
+        </a>
+      ) : null}
+    </div>
   );
 }
 
