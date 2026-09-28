@@ -149,8 +149,8 @@ export const projectSources: ProjectSource[] = [
     repo: "sahil-sanghvi/software-development-methods",
     slug: "survey-response-analyzer",
     title: "Survey Response Analyzer",
-    tagline: "A modular C program analyzing Likert-scale survey data, split across five single-responsibility modules.",
-    tech: ["C"],
+    tagline: "A modular C survey analyzer with dynamic memory management, plus a PyQt6 GUI lab for a login screen and product catalog.",
+    tech: ["C", "Python", "PyQt6"],
   },
   {
     repo: "sahil-sanghvi/software-testing",

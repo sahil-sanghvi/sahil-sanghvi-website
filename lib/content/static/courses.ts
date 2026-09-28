@@ -144,7 +144,7 @@ export const courses: Course[] = [
     title: "Software Development Methods",
     term: "Fall 2024",
     year: 2,
-    summary: "A modular C program analyzing Likert-scale survey data.",
+    summary: "2 assignments + 2 labs — a dynamic-memory survey analyzer in C and a PyQt6 GUI lab. Assignments 3-4 became Medilink.",
     repo_url: "https://github.com/sahil-sanghvi/software-development-methods",
   },
   {

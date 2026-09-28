@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { Profile, Skill, Experience, Project, SkillGroup, Course } from "@/lib/content";
 import type { TimelineItem } from "@/lib/site/timeline";
 import { aggregateLanguages } from "@/lib/site/format";
@@ -64,6 +64,11 @@ export function OsShell({
   const [active, setActive] = useState<FileId>("readme");
   const [open, setOpen] = useState<FileId[]>(["readme"]);
   const [pulse, setPulse] = useState(0);
+  const bodyRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    bodyRef.current?.scrollTo({ top: 0 });
+  }, [active]);
 
   const activeFile = useMemo(() => FILES.find((f) => f.id === active)!, [active]);
   const languages = useMemo(
@@ -232,7 +237,7 @@ export function OsShell({
           </div>
 
           {/* Body */}
-          <div className="relative flex flex-1 min-w-0 min-h-0 overflow-y-auto">
+          <div ref={bodyRef} className="relative flex flex-1 min-w-0 min-h-0 overflow-y-auto">
             <Scene3DBackground variant={active} pulse={pulse} />
             <div className="relative hidden sm:block w-12 shrink-0 pt-8 pr-4 text-right text-muted-foreground/30 text-[10px] leading-[1.6] select-none border-r border-border/50">
               {Array.from({ length: 60 }, (_, i) => (
