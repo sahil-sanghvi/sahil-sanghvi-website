@@ -236,7 +236,17 @@ export default function Scene3D({ variant, pulse }: Props) {
     const resize = () => {
       const { clientWidth: w, clientHeight: h } = host;
       if (!w || !h) return;
-      renderer.setSize(w, h, false);
+      // Let three.js set the canvas's CSS width/height to match the
+      // container (the default, `updateStyle: true`) — nothing in
+      // globals.css sizes <canvas> itself, so skipping this (as `false`
+      // did) left the canvas at its raw drawing-buffer size (w/h times
+      // devicePixelRatio) with no CSS override, rendering it up to ~2x
+      // too large and positioned top-left. The parent's `overflow-hidden`
+      // then clipped it to only the top-left slice, so the scene's
+      // centered object appeared pushed toward the bottom-right corner —
+      // worse at higher devicePixelRatio, hence "looks different per
+      // screen."
+      renderer.setSize(w, h);
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
     };
