@@ -23,6 +23,8 @@ function CourseRow({ c }: { c: ShellCourse }) {
       {c.project_slug ? (
         <Link
           href={`/projects/${c.project_slug}`}
+          target="_blank"
+          rel="noopener noreferrer"
           className="shrink-0 border border-border px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest hover:border-primary hover:text-primary transition-colors"
         >
           View project

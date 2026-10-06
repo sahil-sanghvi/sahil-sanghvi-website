@@ -118,7 +118,12 @@ export function ReadmePane({
                       {usedIn.map((p, i) => (
                         <span key={p.slug}>
                           {i > 0 ? ", " : " "}
-                          <Link href={`/projects/${p.slug}`} className="text-signal-500 hover:text-signal-600">
+                          <Link
+                            href={`/projects/${p.slug}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-signal-500 hover:text-signal-600"
+                          >
                             {p.title}
                           </Link>
                         </span>

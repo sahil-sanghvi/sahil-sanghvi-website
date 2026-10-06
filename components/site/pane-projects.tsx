@@ -22,7 +22,13 @@ export function ProjectsPane({ projects }: { projects: ShellProject[] }) {
       {projects.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {projects.map((p, i) => (
-            <Link key={p.id} href={`/projects/${p.slug}`} className="group flex flex-col gap-4">
+            <Link
+              key={p.id}
+              href={`/projects/${p.slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex flex-col gap-4"
+            >
               <div className="relative overflow-hidden border border-border group-hover:border-primary/50 transition-colors aspect-video">
                 {p.cover_image_url ? (
                   // eslint-disable-next-line @next/next/no-img-element -- external/user-uploaded source, not in next/image's domain allowlist
