@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { IBM_Plex_Mono, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import { MotionProvider } from "@/components/motion/motion-provider";
 import { siteUrl } from "@/lib/site-url";
@@ -102,6 +103,7 @@ export default async function RootLayout({
           <style>{`[data-reveal]{opacity:1 !important;transform:none !important}`}</style>
         </noscript>
         <MotionProvider>{children}</MotionProvider>
+        <Analytics />
       </body>
     </html>
   );
