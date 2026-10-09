@@ -127,6 +127,7 @@ export interface Course {
   summary: string; // one line — what the repo contains, or why there isn't one
   repo_url: string | null; // null when there's no dedicated coursework repo (e.g. a math/writing requirement)
   project_slug?: string; // set when the coursework shipped as its own curated project (see lib/content/static/projects.ts) instead of a plain repo
+  external_url?: string; // set when the course has its own site/subdomain (e.g. a project proposal page) that isn't a GitHub repo or an internal /projects page
 }
 
 /** A curated project entry in lib/content/static/projects.ts. */

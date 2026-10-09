@@ -29,6 +29,15 @@ function CourseRow({ c }: { c: ShellCourse }) {
         >
           View project
         </Link>
+      ) : c.external_url ? (
+        <a
+          href={c.external_url}
+          target="_blank"
+          rel="noreferrer"
+          className="shrink-0 border border-border px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest hover:border-primary hover:text-primary transition-colors"
+        >
+          View proposal
+        </a>
       ) : c.repo_url ? (
         <a
           href={c.repo_url}

@@ -284,8 +284,9 @@ export const courses: Course[] = [
     title: "Overlay and Peer-to-Peer Networking",
     term: "Fall 2026",
     year: 4,
-    summary: "In progress — no assignments published yet.",
+    summary: "Project proposal: resilient P2P messaging and location sharing under churn and network partitions.",
     repo_url: null,
+    external_url: "https://csc466.sahilmitsanghvi.com",
   },
   {
     id: "csc-485a",
