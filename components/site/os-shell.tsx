@@ -111,14 +111,9 @@ export function OsShell({
             <Link href="/terminal" className="hover:text-primary transition-colors">
               Terminal
             </Link>
-            <a
-              href="https://csc466.sahilmitsanghvi.com"
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-primary transition-colors"
-            >
+            <Link href="/active-coursework" className="hover:text-primary transition-colors">
               Active Coursework
-            </a>
+            </Link>
           </nav>
         </div>
         <div className="flex shrink-0 items-center gap-4 text-[10px] text-muted-foreground">
