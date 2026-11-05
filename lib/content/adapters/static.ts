@@ -1,5 +1,5 @@
 import "server-only";
-import type { Profile, Skill, Experience, Education, Project, SkillGroup, Course } from "../types";
+import type { Profile, Skill, Experience, Education, Project, SkillGroup, Course, Certification } from "../types";
 import { profile } from "../static/profile";
 import { skills } from "../static/skills";
 import { technicalSkillGroups } from "../static/technical-skills";
@@ -7,6 +7,7 @@ import { experience } from "../static/experience";
 import { education } from "../static/education";
 import { projectSources } from "../static/projects";
 import { courses } from "../static/courses";
+import { certifications } from "../static/certifications";
 import { fetchRepoData } from "../github";
 
 export async function getProfile(): Promise<Profile> {
@@ -31,6 +32,10 @@ export async function getEducation(): Promise<Education[]> {
 
 export async function getCourses(): Promise<Course[]> {
   return courses;
+}
+
+export async function getCertifications(): Promise<Certification[]> {
+  return certifications;
 }
 
 export async function getProjects(): Promise<Project[]> {

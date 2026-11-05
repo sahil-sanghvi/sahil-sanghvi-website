@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { Profile, Skill, Experience, Project, SkillGroup, Course } from "@/lib/content";
+import type { Profile, Skill, Experience, Project, SkillGroup, Course, Certification } from "@/lib/content";
 import type { TimelineItem } from "@/lib/site/timeline";
 import { aggregateLanguages } from "@/lib/site/format";
 import { Scene3DBackground } from "./scene-3d-background";
@@ -11,6 +11,7 @@ import { ExperiencePane } from "./pane-experience";
 import { ProjectsPane } from "./pane-projects";
 import { SkillsPane } from "./pane-skills";
 import { CoursesPane } from "./pane-courses";
+import { CertificationsPane } from "./pane-certifications";
 import { ContactPane } from "./pane-contact";
 
 export type ShellProfile = Profile;
@@ -18,9 +19,10 @@ export type ShellSkill = Skill;
 export type ShellExperience = Experience;
 export type ShellProject = Project;
 export type ShellCourse = Course;
+export type ShellCertification = Certification;
 export type ShellMetrics = { repos: number; stars: number; available: boolean };
 
-type FileId = "readme" | "experience" | "projects" | "skills" | "courses" | "contact";
+type FileId = "readme" | "experience" | "projects" | "skills" | "courses" | "certifications" | "contact";
 
 const FILES: { id: FileId; name: string; kind: string; path: string }[] = [
   { id: "readme", name: "README.md", kind: "MD", path: "~/portfolio/README.md" },
@@ -28,6 +30,7 @@ const FILES: { id: FileId; name: string; kind: string; path: string }[] = [
   { id: "projects", name: "Projects.json", kind: "JSON", path: "~/portfolio/src/lab/Projects.json" },
   { id: "skills", name: "Skills.yaml", kind: "YAML", path: "~/portfolio/Skills.yaml" },
   { id: "courses", name: "Courses.yaml", kind: "YAML", path: "~/portfolio/Courses.yaml" },
+  { id: "certifications", name: "Certifications.md", kind: "MD", path: "~/portfolio/Certifications.md" },
   { id: "contact", name: "contact.sh", kind: "SH", path: "~/portfolio/bin/contact.sh" },
 ];
 
@@ -49,6 +52,7 @@ export function OsShell({
   experience,
   projects,
   courses,
+  certifications,
   timeline,
   metrics,
 }: {
@@ -58,6 +62,7 @@ export function OsShell({
   experience: ShellExperience[];
   projects: ShellProject[];
   courses: ShellCourse[];
+  certifications: ShellCertification[];
   timeline: TimelineItem[];
   metrics: ShellMetrics;
 }) {
@@ -263,6 +268,7 @@ export function OsShell({
                 {active === "projects" && <ProjectsPane projects={projects} />}
                 {active === "skills" && <SkillsPane groups={technicalSkills} />}
                 {active === "courses" && <CoursesPane courses={courses} />}
+                {active === "certifications" && <CertificationsPane certifications={certifications} />}
                 {active === "contact" && <ContactPane profile={profile} />}
               </div>
             </div>

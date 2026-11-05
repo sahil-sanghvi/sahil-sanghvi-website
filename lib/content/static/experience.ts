@@ -22,7 +22,6 @@ export const experience: Experience[] = [
       "Documented supporting proof for compliant and partially compliant items, and paired each non-compliant item with an example of a compliant practice, giving staff a clear, evidence-based path to resolve gaps.",
       "Used Claude for general tasks and Copilot under organization-level privacy protections for work-related tasks, speeding up minor, repetitive work.",
       "Worked independently with minimal supervision, organizing policy and procedure information with accuracy and attention to detail.",
-      "Certification (October 2026): UVic Privacy, Access to Information, Records Management, and Information Security Employee Training (2026 to 2027), issued by the UVic Privacy and Access to Information Office.",
     ],
     tech: ["Claude", "Microsoft Copilot"],
   },

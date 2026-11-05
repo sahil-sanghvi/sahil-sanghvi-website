@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
-export type SceneVariant = "readme" | "experience" | "projects" | "skills" | "courses" | "contact";
+export type SceneVariant = "readme" | "experience" | "projects" | "skills" | "courses" | "certifications" | "contact";
 
 type Props = {
   variant: SceneVariant;
@@ -21,6 +21,8 @@ function geometryFor(variant: SceneVariant): THREE.BufferGeometry {
       return new THREE.TorusGeometry(1.4, 0.5, 12, 32);
     case "courses":
       return new THREE.TetrahedronGeometry(2, 0);
+    case "certifications":
+      return new THREE.TorusKnotGeometry(1.1, 0.35, 48, 8);
     case "contact":
       return new THREE.OctahedronGeometry(1.9, 0);
     default:
@@ -201,6 +203,7 @@ export default function Scene3D({ variant, pulse }: Props) {
       projects: { az: 3.7, el: 0.1, r: 12.8 },
       skills: { az: 4.45, el: 0.25, r: 12.5 },
       courses: { az: 4.85, el: 0.15, r: 12.1 },
+      certifications: { az: 5.0, el: 0.3, r: 12.4 },
       contact: { az: 5.2, el: 0.42, r: 11.8 },
     };
 

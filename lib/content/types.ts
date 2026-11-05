@@ -157,3 +157,12 @@ export interface ProjectSource {
   started_on?: string;
   ended_on?: string;
 }
+
+/** One row in the Certifications.md tab (see lib/content/static/certifications.ts). */
+export interface Certification {
+  id: string; // stable slug
+  title: string;
+  issuer: string;
+  issued_on: string; // "YYYY-MM-DD"
+  credential_url: string | null; // certificate file (e.g. a PDF in public/) or verification link
+}

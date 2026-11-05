@@ -1,6 +1,6 @@
 import "server-only";
 import { createPublicClient } from "@/lib/supabase/public";
-import type { Profile, Skill, Experience, Education, Project, ProjectGithub, EmploymentType, SkillGroup, Course } from "../types";
+import type { Profile, Skill, Experience, Education, Project, ProjectGithub, EmploymentType, SkillGroup, Course, Certification } from "../types";
 
 /**
  * CONTENT_SOURCE=supabase implementations — the "automated mode" reads the
@@ -67,6 +67,12 @@ export async function getTechnicalSkills(): Promise<SkillGroup[]> {
 export async function getCourses(): Promise<Course[]> {
   // Not modeled in the DB yet — the Courses.yaml tab is static-mode only for
   // now (see lib/content/static/courses.ts).
+  return [];
+}
+
+export async function getCertifications(): Promise<Certification[]> {
+  // Not modeled in the DB yet — the Certifications.md tab is static-mode
+  // only for now (see lib/content/static/certifications.ts).
   return [];
 }
 
