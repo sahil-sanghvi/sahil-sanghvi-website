@@ -7,6 +7,26 @@ import type { Experience } from "../types";
  */
 export const experience: Experience[] = [
   {
+    id: "uvic-registrar-work-study",
+    org: "University of Victoria — Office of the Registrar and Enrolment Management",
+    role: "Office Assistant (Work Study)",
+    employment_type: "part-time",
+    location: "Victoria, BC",
+    start_date: "2026-10-01",
+    end_date: null,
+    is_current: true,
+    summary_md:
+      "Built a policy compliance checklist to verify UVic policies are being followed, giving staff a clear, evidence-based path to resolve gaps.",
+    highlights: [
+      "Developed a policy compliance checklist to verify that UVic policies are being followed, rating each requirement as compliant, partially compliant, or non-compliant.",
+      "Documented supporting proof for compliant and partially compliant items, and paired each non-compliant item with an example of a compliant practice, giving staff a clear, evidence-based path to resolve gaps.",
+      "Used Claude for general tasks and Copilot under organization-level privacy protections for work-related tasks, speeding up minor, repetitive work.",
+      "Worked independently with minimal supervision, organizing policy and procedure information with accuracy and attention to detail.",
+      "Certification (October 2026): UVic Privacy, Access to Information, Records Management, and Information Security Employee Training (2026 to 2027), issued by the UVic Privacy and Access to Information Office.",
+    ],
+    tech: ["Claude", "Microsoft Copilot"],
+  },
+  {
     id: "stealth-startup",
     org: "Stealth Startup",
     role: "Head Software Engineer",
