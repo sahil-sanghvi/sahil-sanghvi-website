@@ -90,6 +90,13 @@ export default function TravelPage() {
 
       {stops.length > 0 ? (
         <>
+          <Link
+            href="/travel/trail"
+            className="bg-signal-500 text-ink-950 hover:bg-signal-600 mt-8 inline-flex items-center gap-3 px-5 py-3 text-sm font-bold"
+          >
+            ▶ Play the trail
+            <span className="text-ink-950/70 hidden font-normal sm:inline">place by place, with the map flying between them</span>
+          </Link>
           <div className="mt-10">
             <IndexMap stops={toMapStops(stops)} />
           </div>

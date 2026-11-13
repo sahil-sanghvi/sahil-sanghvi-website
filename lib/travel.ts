@@ -54,6 +54,7 @@ export function getTravelStops(): TravelStop[] {
     if (!s.name || !Number.isFinite(s.lat) || !Number.isFinite(s.lng) || photos.length === 0) continue;
 
     let slug = slugify(s.slug || s.name) || "place";
+    if (slug === "trail") slug = "trail-place"; // /travel/trail is the game
     for (let n = 2; seen.has(slug); n++) slug = `${slugify(s.slug || s.name)}-${n}`;
     seen.add(slug);
 
