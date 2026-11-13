@@ -25,6 +25,7 @@ export const projectSources: ProjectSource[] = [
     repo: "sahil-sanghvi/nwhacks2026-precheckai",
     slug: "precheck-ai",
     kind: "hackathon",
+    live_url: "https://www.precheckai.tech",
     title: "PreCheck.ai",
     tagline: "AI-powered health insurance claims assistant — Runner-Up (Google Gemini Track) & Best .tech Domain, nwHacks 2026.",
     description_md:
@@ -62,6 +63,7 @@ export const projectSources: ProjectSource[] = [
   {
     repo: "sahil-sanghvi/palendar",
     slug: "palendar",
+    live_url: "https://palendar-pied.vercel.app",
     title: "Palendar",
     tagline: "A calendar built for a Human–Computer Interaction course — interaction design as a first-class concern.",
     tech: ["TypeScript", "React"],
