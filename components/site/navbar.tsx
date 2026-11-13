@@ -38,8 +38,14 @@ export function Navbar() {
           SAHIL-SANGHVI(1)
         </Link>
         <Link
+          href="/travel"
+          className="text-furniture text-muted-foreground hover:text-foreground ml-auto shrink-0 tracking-wide transition-colors"
+        >
+          TRAVEL(7)
+        </Link>
+        <Link
           href="/terminal"
-          className="text-furniture text-signal-500 hover:text-signal-600 ml-auto shrink-0 tracking-wide transition-colors"
+          className="text-furniture text-signal-500 hover:text-signal-600 shrink-0 tracking-wide transition-colors"
         >
           → TERMINAL(1)
         </Link>

@@ -1,6 +1,5 @@
 import type { Command, VDir } from "../types";
 import { error, text } from "../types";
-import { lookup } from "../fs";
 
 const NOT_A_REPO = error(
   "fatal: not a git repository (or any of the parent directories): .git"
@@ -75,6 +74,7 @@ export const gitCommand: Command = {
       return { kind: "long", title: `git show ${sha}`, lineCount: diff.split("\n").length, body: diff };
     }
 
+    if (!sub) return text("usage: git <log|show|status> [args]");
     return error(`git: '${sub}' is not a supported command here (log, show, status)`);
   },
 };

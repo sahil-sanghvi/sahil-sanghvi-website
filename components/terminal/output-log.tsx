@@ -1,4 +1,5 @@
 import type { CommandOutput, Segment } from "@/lib/terminal/types";
+import { opensInNewTab } from "@/lib/terminal/navigate";
 
 function SegmentSpan({ segment }: { segment: Segment }) {
   const toneClass =
@@ -12,7 +13,11 @@ function SegmentSpan({ segment }: { segment: Segment }) {
 
   if (segment.href) {
     return (
-      <a href={segment.href} className={`${toneClass} underline`}>
+      <a
+        href={segment.href}
+        className={`${toneClass} underline`}
+        {...(opensInNewTab(segment.href) ? { target: "_blank", rel: "noreferrer" } : {})}
+      >
         {segment.text}
       </a>
     );

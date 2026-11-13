@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import type { VDir, CommandOutput, ShellCtx } from "@/lib/terminal/types";
 import { commands } from "@/lib/terminal/commands";
 import { parseCommand } from "@/lib/terminal/parser";
-import { HOME, listDir, nearestMatch } from "@/lib/terminal/fs";
+import { HOME, completePath, nearestMatch } from "@/lib/terminal/fs";
+import { openHref } from "@/lib/terminal/navigate";
 import { HistoryLine, type Entry } from "./history-line";
 import { MobileCommandBar } from "./mobile-command-bar";
 
@@ -88,7 +89,7 @@ export function Terminal({ fs }: { fs: VDir }) {
     return () => vv.removeEventListener("resize", onResize);
   }, []);
 
-  const navigate = useCallback((href: string) => router.push(href), [router]);
+  const navigate = useCallback((href: string) => openHref(href, router.push), [router]);
 
   const runCommand = useCallback(
     async (raw: string) => {
@@ -109,7 +110,10 @@ export function Terminal({ fs }: { fs: VDir }) {
         return;
       }
 
-      const command = commands[parsed.cmd];
+      // `./launch`, `projects/x/launch`: running a path runs it like `run <path>`.
+      const runsPath = !commands[parsed.cmd] && parsed.cmd.includes("/");
+      const command = runsPath ? commands.run : commands[parsed.cmd];
+      if (runsPath) parsed.args = [parsed.cmd, ...parsed.args];
       if (!command) {
         dispatch({
           type: "update",
@@ -124,6 +128,7 @@ export function Terminal({ fs }: { fs: VDir }) {
       const ctx: ShellCtx = {
         fs,
         cwd: state.cwd,
+        prevCwd: state.prevCwd,
         history: nextHistory,
         signal: controller.signal,
         setCwd: (path) => dispatch({ type: "setCwd", path }),
@@ -142,7 +147,7 @@ export function Terminal({ fs }: { fs: VDir }) {
         });
       }
     },
-    [fs, history, navigate, state.cwd]
+    [fs, history, navigate, state.cwd, state.prevCwd]
   );
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -185,10 +190,8 @@ export function Terminal({ fs }: { fs: VDir }) {
         const match = nearestMatch(cmdPart, Object.keys(commands));
         if (match) setInputValue(match);
       } else {
-        const dirNode = fs; // completion is best-effort against the root listing
-        const candidates = listDir(dirNode).map((e) => e.name);
-        const match = nearestMatch(rest[rest.length - 1], candidates);
-        if (match) setInputValue([cmdPart, ...rest.slice(0, -1), match].join(" "));
+        const completed = completePath(fs, state.cwd, rest[rest.length - 1]);
+        if (completed) setInputValue([cmdPart, ...rest.slice(0, -1), completed].join(" "));
       }
       return;
     }

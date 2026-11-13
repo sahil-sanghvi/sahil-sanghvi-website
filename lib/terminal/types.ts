@@ -9,6 +9,9 @@ export interface VDir extends VBase {
   type: "dir";
   children: Record<string, VNode>;
   git?: { owner: string; repo: string; branch: string };
+  /** Where `run` / `open` send you for this directory (a project's live site,
+   *  or its GitHub repo when it isn't deployed anywhere). */
+  launch?: { href: string; kind: "live" | "repo" };
 }
 
 export interface VFile extends VBase {
@@ -16,6 +19,7 @@ export interface VFile extends VBase {
   content: string;
   binary?: boolean; // resume.pdf -> `cat` refuses
   href?: string; // `open` target
+  executable?: boolean; // shows as `launch*` in `ls -l`; `./launch` runs it
 }
 
 export type VNode = VDir | VFile;
@@ -32,6 +36,7 @@ export type CommandOutput =
 export interface ShellCtx {
   fs: VDir;
   cwd: string;
+  prevCwd: string; // for `cd -`
   history: string[];
   signal: AbortSignal;
   setCwd(path: string): void;

@@ -67,6 +67,9 @@ export default async function RootLayout({
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Person",
+    // Stable id so other pages' JSON-LD (travel photos' `creator`) can point
+    // back at this same person instead of describing a new one.
+    "@id": `${origin}/#person`,
     name: profile.full_name,
     url: origin,
     description: profile.headline,

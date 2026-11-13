@@ -46,3 +46,20 @@ export function nearestMatch(target: string, candidates: string[]): string | nul
   const lower = target.toLowerCase();
   return candidates.find((c) => c.toLowerCase().startsWith(lower)) ?? null;
 }
+
+/**
+ * Tab-completes the last path segment of `partial` against the directory it
+ * points into, relative to `cwd` (`cat pro` → `cat projects/`,
+ * `cd projects/pre` → `cd projects/precheck-ai/`). Returns null when nothing
+ * matches. Directories get a trailing slash so the next Tab keeps descending.
+ */
+export function completePath(root: VDir, cwd: string, partial: string): string | null {
+  const slash = partial.lastIndexOf("/");
+  const dirPart = slash >= 0 ? partial.slice(0, slash + 1) : "";
+  const stem = partial.slice(slash + 1);
+  const dir = lookup(root, resolvePath(cwd, dirPart || "."));
+  if (!dir || dir.type !== "dir") return null;
+  const match = nearestMatch(stem, Object.keys(dir.children).sort());
+  if (!match) return null;
+  return dirPart + match + (dir.children[match].type === "dir" ? "/" : "");
+}

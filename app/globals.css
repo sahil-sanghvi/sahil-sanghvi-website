@@ -335,3 +335,97 @@ html {
     animation: none;
   }
 }
+
+/*
+  Travel map (components/travel/travel-map.tsx). Leaflet ships its own
+  rounded, shadowed chrome; this re-sets it into the man-page system: square
+  pins, hairline borders, no shadows, the one amber accent for anything you
+  can click.
+*/
+.travel-map {
+  font-family: var(--font-mono);
+}
+.travel-map .leaflet-container,
+.travel-map.leaflet-container {
+  background: var(--color-ink-900);
+  font-family: var(--font-mono);
+}
+.travel-pin {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  background: var(--color-ink-950);
+  color: var(--color-signal-500);
+  border: 1px solid var(--color-signal-500);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  transition: background-color 0.15s, color 0.15s;
+}
+.travel-pin:hover,
+.travel-pin.is-focus,
+.leaflet-marker-icon:focus-visible .travel-pin {
+  background: var(--color-signal-500);
+  color: var(--color-ink-950);
+}
+.travel-pin.is-focus {
+  font-size: 12px;
+}
+.travel-trail {
+  stroke: var(--color-signal-500);
+}
+.travel-map .leaflet-popup-content-wrapper,
+.travel-map .leaflet-popup-tip {
+  background: var(--color-ink-950);
+  color: var(--color-ink-050);
+  border: 1px solid var(--color-ink-700);
+  border-radius: 0;
+  box-shadow: none;
+}
+.travel-map .leaflet-popup-tip-container {
+  display: none;
+}
+.travel-map .leaflet-popup-content {
+  margin: 10px 12px;
+}
+.travel-popup {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.travel-popup a {
+  color: var(--color-signal-500);
+  font-weight: 700;
+  font-size: 13px;
+}
+.travel-popup a:hover {
+  color: var(--color-signal-600);
+}
+.travel-popup span {
+  color: var(--color-ink-400);
+  font-size: 11px;
+}
+.travel-map .leaflet-bar {
+  border: 1px solid var(--color-ink-700);
+  border-radius: 0;
+  box-shadow: none;
+}
+.travel-map .leaflet-bar a {
+  background: var(--color-ink-950);
+  color: var(--color-ink-050);
+  border-color: var(--color-ink-700);
+  border-radius: 0 !important;
+}
+.travel-map .leaflet-bar a:hover {
+  color: var(--color-signal-500);
+}
+.travel-map .leaflet-control-attribution {
+  background: color-mix(in oklch, var(--color-ink-950) 80%, transparent);
+  color: var(--color-ink-400);
+  font-size: 10px;
+}
+.travel-map .leaflet-control-attribution a {
+  color: var(--color-ink-400);
+}

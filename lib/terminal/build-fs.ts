@@ -1,4 +1,5 @@
 import { getProfile, getSkills, getExperience, getProjects } from "@/lib/content";
+import { getTravelStops, placeLabel, formatTravelDate, formatCoords } from "@/lib/travel";
 import type { VDir, VFile } from "./types";
 
 const README_CAP = 40_000; // ~40KB per project in the snapshot
@@ -104,11 +105,47 @@ export async function buildFilesystem(): Promise<VDir> {
       };
     }
 
+    // `run` / `./launch` target: the deployed site when there is one,
+    // otherwise the GitHub repo.
+    const launchHref = p.live_url || p.repo_url;
+    if (launchHref) {
+      children["launch"] = {
+        type: "file",
+        name: "launch",
+        executable: true,
+        href: launchHref,
+        content: `#!/bin/sh\n# ${p.live_url ? "opens the deployed site" : "not deployed — opens the GitHub repo"}\nopen ${launchHref}`,
+      };
+    }
+
     const dir: VDir = { type: "dir", name: p.slug, children };
+    if (launchHref) dir.launch = { href: launchHref, kind: p.live_url ? "live" : "repo" };
     if (gh) {
       dir.git = { owner: gh.owner, repo: gh.repo, branch: gh.default_branch };
     }
     projectsDir[p.slug] = dir;
+  }
+
+  // ~/travel: one file per place, each opening its page on the site.
+  const travelDir: Record<string, VFile> = {};
+  for (const [i, stop] of getTravelStops().entries()) {
+    const fname = `${String(i + 1).padStart(2, "0")}-${stop.slug}.txt`;
+    travelDir[fname] = {
+      type: "file",
+      name: fname,
+      href: `/travel/${stop.slug}`,
+      content: [
+        placeLabel(stop),
+        [formatTravelDate(stop.date), formatCoords(stop.lat, stop.lng), `${stop.photos.length} photo${stop.photos.length === 1 ? "" : "s"}`]
+          .filter(Boolean)
+          .join(" · "),
+        stop.title ? `\n${stop.title}` : null,
+        stop.note ? `\n${stop.note}` : null,
+        `\n\`open ${fname}\` to see the photos.`,
+      ]
+        .filter((l) => l !== null)
+        .join("\n"),
+    };
   }
 
   const home: VDir = {
@@ -121,6 +158,7 @@ export async function buildFilesystem(): Promise<VDir> {
       "resume.pdf": { type: "file", name: "resume.pdf", content: "", binary: true, href: "/resume.pdf" },
       experience: { type: "dir", name: "experience", children: experienceDir },
       projects: { type: "dir", name: "projects", children: projectsDir },
+      travel: { type: "dir", name: "travel", children: travelDir },
     },
   };
 

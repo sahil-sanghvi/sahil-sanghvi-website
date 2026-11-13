@@ -34,6 +34,31 @@ Open http://localhost:3000.
   recent commits from GitHub.
 - The résumé PDF served at `/resume.pdf` lives in `public/resume.pdf`.
 
+## Travel photos (`/travel`)
+
+A map of places plus their photos, one page per place (`/travel/<place>`),
+built so the photos show up when someone searches "Sahil Sanghvi".
+
+```bash
+npm run travel      # local editor → http://localhost:5174
+```
+
+- Drop photos on the editor. They're resized to 1600px JPEGs in
+  `public/travel/`; GPS and date come from the photo's EXIF, and photos
+  taken near each other are grouped into one place.
+- Fill in the place name, region, caption and story. "Describe this photo"
+  sets a photo's alt text (optional; a good default is generated).
+- Drag places to reorder: that's the numbering and the route on the map.
+- Click **Tidy file names** before committing: photos get renamed to
+  `sahil-sanghvi-<place>-<n>.jpg`.
+- Commit `lib/content/static/travel.json` + `public/travel/` and push.
+
+A place missing a name, pin or photo stays off the site until it's complete.
+SEO: every photo is a plain `<img>` with descriptive alt text, listed in the
+image sitemap (`/sitemap.xml`) and in schema.org `ImageObject` data credited
+to the same Person as the home page. Submit the sitemap in Google Search
+Console after the first deploy to get it crawled sooner.
+
 ## Deploy (Vercel)
 
 1. Push this repo to GitHub.

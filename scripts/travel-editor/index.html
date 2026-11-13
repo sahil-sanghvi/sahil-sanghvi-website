@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Travel Editor</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H" crossorigin="anonymous">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH" crossorigin="anonymous"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#1E1B18;--cream:#FFF6E9;--paper:#fff;--coral:#D9822B;--sun:#F3C77A;--sea:#2F6F8F;--muted:#8A8178;--line:#E4DACB;--bad:#D8342B}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:var(--cream);font-family:'IBM Plex Mono',ui-monospace,monospace;color:var(--ink);font-size:14px}
+  button,input,textarea{font:inherit;color:inherit}
+  button{cursor:pointer;border:0;background:none}
+  .btn{background:var(--paper);border:2px solid var(--ink);border-radius:10px;padding:6px 12px;font-weight:700;box-shadow:2px 2px 0 var(--ink);min-height:34px;white-space:nowrap}
+  .btn:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--ink)}
+  .btn.primary{background:var(--coral);color:#fff}
+  .btn.danger{color:var(--bad)} .btn.danger.armed{background:var(--bad);color:#fff}
+  .btn:disabled{opacity:.4;cursor:default}
+  .btn.sm{padding:3px 8px;min-height:28px;font-size:13px}
+
+  #shell{display:grid;grid-template-rows:auto 1fr;height:100%}
+  header{display:flex;align-items:center;gap:14px;padding:10px 16px;border-bottom:2px solid var(--ink);background:var(--paper)}
+  header h1{font-size:18px;font-weight:800;letter-spacing:-.01em}
+  header .stat{font-size:13px;color:var(--muted);font-weight:700}
+  header .stat b{color:var(--ink)}
+  #save{margin-left:auto;font-size:13px;font-weight:700;color:var(--muted)}
+  #save.err{color:var(--bad)}
+
+  main{display:grid;grid-template-columns:300px minmax(340px,1fr) minmax(360px,1.2fr);min-height:0}
+  @media (max-width:1100px){main{grid-template-columns:260px 1fr;grid-template-rows:1fr 380px}#mapCol{grid-column:1/-1}}
+
+  /* list */
+  #listCol{border-right:2px solid var(--ink);display:flex;flex-direction:column;min-height:0;background:var(--cream)}
+  #drop{margin:12px;border:2.5px dashed var(--ink);border-radius:14px;padding:16px 12px;text-align:center;background:var(--paper);cursor:pointer}
+  #drop strong{display:block;font-size:15px}
+  #drop span{font-size:12px;color:var(--muted)}
+  #drop.over{background:var(--sun)}
+  #addrBox{margin:0 12px 10px}
+  #addrBox textarea{width:100%;border:2px solid var(--ink);border-radius:12px;padding:8px 10px;background:var(--paper);outline:none;resize:none;max-height:140px;overflow:auto;display:block}
+  #addrBox textarea:focus{box-shadow:3px 3px 0 var(--coral)}
+  #addrBox textarea:disabled{opacity:.6}
+  #addrBox span{display:block;font-size:11px;color:var(--muted);margin-top:4px}
+  .tools{display:flex;gap:6px;padding:0 12px 10px;flex-wrap:wrap}
+  #queue{margin:0 12px 10px;font-size:12px;font-weight:700;display:none;background:var(--ink);color:var(--cream);border-radius:10px;padding:8px 10px}
+  #queue.show{display:block}
+  #queue .errs{color:#ffb4a8;font-weight:500;margin-top:4px;max-height:80px;overflow:auto}
+  #list{list-style:none;overflow:auto;flex:1;padding:0 8px 12px}
+  #list li{display:grid;grid-template-columns:22px 44px 1fr;gap:8px;align-items:center;padding:6px;border-radius:10px;cursor:pointer;border:2px solid transparent}
+  #list li:hover{background:#fff8}
+  #list li.sel{background:var(--paper);border-color:var(--ink);box-shadow:2px 2px 0 var(--ink)}
+  #list li.dragging{opacity:.4}
+  #list li.dropAbove{box-shadow:0 -3px 0 var(--coral)}
+  #list .n{font-size:12px;font-weight:800;color:var(--muted);text-align:right}
+  #list .th{width:44px;height:44px;border-radius:8px;background:#E9E1D3 center/cover no-repeat;border:1.5px solid var(--line);display:grid;place-items:center;font-size:10px;color:var(--muted);font-weight:700}
+  #list .nm{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #list .nm.empty{color:var(--muted);font-style:italic;font-weight:500}
+  #list .flags{display:flex;gap:4px;margin-top:2px}
+  .flag{font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;border-radius:6px;padding:1px 5px;background:#FBE3DF;color:var(--bad)}
+  .flag.ok{background:#E3F1E6;color:#2E7D46}
+
+  /* detail */
+  #detailCol{overflow:auto;padding:16px 18px 24px;min-width:0}
+  #empty{color:var(--muted);text-align:center;margin-top:20vh;font-size:16px}
+  .navrow{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+  .navrow .pos{font-weight:800;font-size:16px;margin-right:auto}
+  .media{position:relative;background:#E9E1D3;border:2px solid var(--ink);border-radius:12px;overflow:hidden;aspect-ratio:1/1;max-height:46vh;width:100%;display:grid;place-items:center}
+  .media img,.media video{width:100%;height:100%;object-fit:cover;display:block;background:#000}
+  .media .none{font-size:24px;color:var(--muted)}
+  .media.over{outline:4px solid var(--sun)}
+  #list .th{position:relative}
+  #list .cnt{position:absolute;right:-5px;bottom:-5px;background:var(--ink);color:var(--cream);font-style:normal;font-size:10px;font-weight:800;border-radius:999px;min-width:18px;height:18px;display:grid;place-items:center;padding:0 4px}
+  .media .arrow{position:absolute;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;background:rgba(30,27,24,.75);color:#fff;font-size:18px;font-weight:800;display:grid;place-items:center}
+  .media .arrow.l{left:8px} .media .arrow.r{right:8px}
+  .media .count{position:absolute;top:8px;right:8px;background:rgba(30,27,24,.75);color:#fff;font-size:12px;font-weight:800;border-radius:999px;padding:2px 9px}
+  .strip{display:flex;gap:6px;margin-top:8px;overflow-x:auto;padding:2px 2px 6px}
+  .strip button{flex:none;width:56px;height:56px;border-radius:8px;border:2px solid var(--line);background:#E9E1D3 center/cover no-repeat;font-size:10px;font-weight:800;color:var(--muted);position:relative}
+  .strip button.on{border-color:var(--coral);box-shadow:0 0 0 2px var(--coral)}
+  .strip button.add{border:2px dashed var(--ink);color:var(--ink);font-size:22px;background:var(--paper)}
+  .strip button .vid{position:absolute;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.35);color:#fff;border-radius:6px}
+  .mediaBar{display:flex;gap:6px;margin:8px 0 14px;flex-wrap:wrap;align-items:center}
+  .mediaBar small{color:var(--muted);margin-left:auto;font-size:12px}
+  label.f{display:block;margin-bottom:12px}
+  label.f > span{display:flex;justify-content:space-between;font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+  label.f input,label.f textarea{width:100%;border:2px solid var(--ink);border-radius:10px;padding:8px 10px;background:var(--paper);outline:none}
+  label.f input:focus,label.f textarea:focus{box-shadow:3px 3px 0 var(--coral)}
+  label.f textarea{resize:vertical;min-height:90px;line-height:1.4}
+  label.f input.cap{font-size:16px;font-weight:700}
+  .ll{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end}
+  .ll label.f{margin:0}
+  .hint{font-size:12px;color:var(--muted);margin-top:6px}
+  .row2{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+
+  /* map */
+  #mapCol{position:relative;border-left:2px solid var(--ink);min-height:0}
+  #map{position:absolute;inset:0;background:#e8e2d6}
+  .leaflet-tile-pane{filter:saturate(.7)}
+  #search{position:absolute;z-index:500;top:12px;left:12px;right:12px;max-width:420px}
+  #search input{width:100%;border:2px solid var(--ink);border-radius:12px;padding:9px 12px;background:var(--paper);box-shadow:3px 3px 0 var(--ink);outline:none}
+  #results{list-style:none;margin-top:6px;background:var(--paper);border:2px solid var(--ink);border-radius:12px;overflow:hidden;display:none}
+  #results.show{display:block}
+  #results li{padding:8px 12px;cursor:pointer;border-top:1px solid var(--line);font-size:13px}
+  #results li:first-child{border-top:0}
+  #results li:hover{background:var(--cream)}
+  #mapTip{position:absolute;z-index:500;bottom:14px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--cream);border-radius:999px;padding:8px 14px;font-weight:700;font-size:13px;white-space:nowrap;pointer-events:none}
+  .mk{width:26px;height:26px;border-radius:50% 50% 50% 3px;transform:rotate(-45deg);display:grid;place-items:center;border:2px solid var(--ink);background:var(--sun);box-shadow:2px 2px 0 var(--ink)}
+  .mk b{transform:rotate(45deg);font-size:11px;font-weight:800}
+  .mk.sel{width:38px;height:38px;background:var(--coral);color:#fff}
+  .mk.sel b{font-size:15px}
+
+  #dropAll{position:fixed;inset:0;z-index:2000;background:rgba(255,201,60,.85);display:none;place-items:center;font-size:32px;font-weight:800;border:6px dashed var(--ink)}
+  #dropAll.show{display:grid}
+  kbd{font:inherit;font-size:11px;border:1.5px solid var(--line);border-radius:4px;padding:0 4px;background:var(--paper)}
+</style>
+</head>
+<body>
+<div id="shell">
+  <header>
+    <h1>Travel Editor</h1>
+    <span class="stat" id="stat"></span>
+    <span id="save">Loading…</span>
+    <button class="btn" id="tidy" title="Rename every photo to sahil-sanghvi-&lt;place&gt;-&lt;n&gt;.jpg. Do this before you commit.">Tidy file names</button>
+    <a class="btn" href="http://localhost:3000/travel" target="_blank" rel="noopener" title="Needs `npm run dev` running">Preview /travel ↗</a>
+  </header>
+  <main>
+    <section id="listCol">
+      <div id="drop" tabindex="0" role="button" aria-label="Add photos">
+        <strong>Drop photos here</strong>
+        <span>or click to choose · photos taken near each other become one place</span>
+      </div>
+      <input type="file" id="file" accept="image/*" multiple hidden>
+      <input type="file" id="replaceFile" accept="image/*" multiple hidden>
+      <div id="addrBox">
+        <textarea id="addr" rows="1" placeholder="Add a place by name… (Enter)" autocomplete="off" aria-label="Add a place by name"></textarea>
+        <span>Paste several, one per line, to add them all</span>
+      </div>
+      <div id="queue"></div>
+      <div class="tools">
+        <button class="btn sm" id="addEmpty">+ Empty place</button>
+        <button class="btn sm" id="sortDate" title="Order places by when the photos were taken">Sort by date taken</button>
+        <button class="btn sm" id="filterBtn">Show: all</button>
+      </div>
+      <ul id="list"></ul>
+    </section>
+
+    <section id="detailCol">
+      <div id="empty">Drop some travel photos on the left to get started.</div>
+      <div id="detail" hidden>
+        <div class="navrow">
+          <span class="pos" id="pos"></span>
+          <button class="btn sm" id="prev" title="Alt + ↑">↑ Prev</button>
+          <button class="btn sm" id="next" title="Alt + ↓">↓ Next</button>
+        </div>
+        <div class="media" id="media"></div>
+        <div class="strip" id="strip"></div>
+        <div class="mediaBar">
+          <button class="btn sm" id="replace">+ Add photos</button>
+          <button class="btn sm" id="mLeft" title="Move this photo earlier">◀ Move</button>
+          <button class="btn sm" id="mRight" title="Move this photo later">Move ▶</button>
+          <button class="btn sm" id="removeMedia">Remove this one</button>
+          <small id="mediaInfo"></small>
+        </div>
+        <label class="f" id="altRow"><span>Describe this photo <em style="font-style:normal;text-transform:none;letter-spacing:0">(alt text, optional: e.g. "hiking the Plain of Six Glaciers trail")</em></span><input id="fAlt" autocomplete="off"></label>
+
+        <label class="f"><span>Place name</span><input id="fName" placeholder="e.g. Moraine Lake" autocomplete="off"></label>
+        <label class="f"><span>Region</span><input id="fRegion" placeholder="e.g. Banff, Alberta, Canada" autocomplete="off"></label>
+        <label class="f"><span>Caption</span><input id="fTitle" class="cap" placeholder="One line, shown big" autocomplete="off"></label>
+        <label class="f"><span>Story</span><textarea id="fNote" placeholder="A few sentences about this place"></textarea></label>
+        <div class="ll" style="grid-template-columns:1fr 1.4fr">
+          <label class="f"><span>When</span><input id="fDate" placeholder="2025-07" autocomplete="off"></label>
+          <label class="f"><span>Page URL <em id="slugHint" style="font-style:normal;text-transform:none;letter-spacing:0"></em></span><input id="fSlug" placeholder="auto from place name" autocomplete="off"></label>
+        </div>
+
+        <div class="ll">
+          <label class="f"><span>Latitude</span><input id="fLat" inputmode="decimal" autocomplete="off"></label>
+          <label class="f"><span>Longitude</span><input id="fLng" inputmode="decimal" autocomplete="off"></label>
+          <button class="btn sm" id="clearLoc">Clear</button>
+        </div>
+        <div class="row2">
+          <button class="btn sm" id="copyPrev">Same pin as previous place</button>
+          <button class="btn sm" id="lookupName">Name + region from pin</button>
+          <button class="btn sm" id="useGps" hidden>Use photo GPS</button>
+        </div>
+        <p class="hint">Click the map to drop the pin, or drag it. <kbd>Alt</kbd>+<kbd>↑</kbd>/<kbd>↓</kbd> moves between places.</p>
+
+        <div class="row2" style="margin-top:22px;justify-content:space-between">
+          <div class="row2" style="margin:0">
+            <button class="btn sm" id="moveUp">Move up</button>
+            <button class="btn sm" id="moveDown">Move down</button>
+            <button class="btn sm" id="merge" title="Move these photos into the place above and remove this one">Merge into previous place</button>
+          </div>
+          <button class="btn sm danger" id="del">Delete place</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="mapCol">
+      <div id="map"></div>
+      <div id="search">
+        <input id="q" placeholder="Search anywhere (e.g. Moraine Lake)…" autocomplete="off">
+        <ul id="results"></ul>
+      </div>
+      <div id="mapTip">Select a place, then click the map to pin it</div>
+    </section>
+  </main>
+</div>
+<div id="dropAll">Drop to add photos</div>
+
+<script>
+/* ---------- state ---------- */
+let stops = [];
+let selId = null;
+let filter = 'all'; // all | todo
+const $ = id => document.getElementById(id);
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = () => 's' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+const sel = () => stops.find(s => s.id === selId);
+const idx = () => stops.findIndex(s => s.id === selId);
+const hasLoc = s => Number.isFinite(s.lat) && Number.isFinite(s.lng);
+const problems = s => [!s.name && 'no name', !hasLoc(s) && 'no pin', !s.media.length && 'no photos', !s.region && 'no region', !s.title && 'no caption'].filter(Boolean);
+// In the editor each place has `media`: an ordered list of "/travel/x.jpg" srcs,
+// and `meta[src]` holds that photo's width/height/alt/taken. On disk (travel.json)
+// they're stored together as `photos: [{ src, width, height, alt, taken }]`.
+const isVid = () => false;
+const meta = {};
+const normalize = s => {
+  s.media = (s.photos || []).map(p => { meta[p.src] = { width: p.width, height: p.height, alt: p.alt || '', taken: p.taken }; return p.src; });
+  delete s.photos; return s;
+};
+const serialize = s => {
+  const { media, gps, ...rest } = s;
+  const out = { ...rest, slug: s.slug || slugify(s.name), photos: media.map(src => ({ src, ...meta[src] })) };
+  for (const p of out.photos) { if (!p.alt) delete p.alt; if (!p.taken) delete p.taken; }
+  return out;
+};
+const slugify = v => String(v || '').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60);
+const firstPhoto = s => s.media.find(p => !isVid(p));
+const cur = {}; // stop id → which media item is showing (editor only)
+
+/* ---------- saving ---------- */
+let saveT, saving = Promise.resolve();
+function setSave(text, err) { const el = $('save'); el.textContent = text; el.classList.toggle('err', !!err); }
+function persist() {
+  setSave('Unsaved…');
+  clearTimeout(saveT);
+  saveT = setTimeout(() => {
+    const body = JSON.stringify(stops.map(serialize));
+    saving = saving.then(() => fetch('/api/stops', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body }))
+      .then(r => { if (!r.ok) throw new Error(r.status); setSave('All changes saved'); })
+      .catch(e => setSave('Save failed: is the server running?', true));
+  }, 400);
+}
+window.addEventListener('beforeunload', e => { if ($('save').textContent.startsWith('Unsaved')) { e.preventDefault(); e.returnValue = ''; } });
+
+/* ---------- list ---------- */
+function renderStat() {
+  const todo = stops.filter(s => problems(s).length).length;
+  $('stat').innerHTML = `<b>${stops.length}</b> places · <b>${stops.reduce((n, s) => n + s.media.length, 0)}</b> photos · <b>${todo}</b> need attention <span title="Places missing a name, pin or photo stay off the site">(?)</span>`;
+}
+function renderList() {
+  renderStat();
+  const ul = $('list');
+  ul.innerHTML = stops.map((s, i) => {
+    if (filter === 'todo' && !problems(s).length && s.id !== selId) return '';
+    const p = problems(s);
+    const fp = firstPhoto(s);
+    const thumb = fp ? `style="background-image:url('${esc(fp)}')"` : '';
+    return `<li data-id="${s.id}" draggable="true" class="${s.id === selId ? 'sel' : ''}">
+      <span class="n">${i + 1}</span>
+      <span class="th" ${thumb}>${fp ? '' : s.media.length ? 'VIDEO' : '—'}${s.media.length > 1 ? `<i class="cnt">${s.media.length}</i>` : ''}</span>
+      <span style="min-width:0"><div class="nm ${s.name || s.title ? '' : 'empty'}">${esc(s.name || s.title || 'Untitled')}</div>
+        <div class="flags">${p.length ? p.map(x => `<span class="flag">${x}</span>`).join('') : '<span class="flag ok">ready</span>'}</div></span>
+    </li>`;
+  }).join('');
+  renderMarkers();
+}
+$('list').addEventListener('click', e => { const li = e.target.closest('li'); if (li) select(li.dataset.id, true); });
+
+// drag to reorder
+let dragId = null;
+$('list').addEventListener('dragstart', e => { const li = e.target.closest('li'); if (!li) return; dragId = li.dataset.id; li.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', dragId); });
+$('list').addEventListener('dragend', () => { dragId = null; renderList(); });
+$('list').addEventListener('dragover', e => {
+  if (!dragId) return; e.preventDefault();
+  document.querySelectorAll('#list li.dropAbove').forEach(x => x.classList.remove('dropAbove'));
+  const li = e.target.closest('li'); if (li) li.classList.add('dropAbove');
+});
+$('list').addEventListener('drop', e => {
+  if (!dragId) return; e.preventDefault(); e.stopPropagation();
+  const li = e.target.closest('li'); if (!li || li.dataset.id === dragId) return;
+  const from = stops.findIndex(s => s.id === dragId);
+  const [moved] = stops.splice(from, 1);
+  stops.splice(stops.findIndex(s => s.id === li.dataset.id), 0, moved);
+  persist(); renderList(); renderDetail();
+});
+
+$('filterBtn').onclick = () => { filter = filter === 'all' ? 'todo' : 'all'; $('filterBtn').textContent = filter === 'all' ? 'Show: all' : 'Show: needs attention'; renderList(); };
+$('addEmpty').onclick = () => { const s = { id: uid(), name: '', region: '', title: '', note: '', media: [] }; const i = idx(); stops.splice(i < 0 ? stops.length : i + 1, 0, s); persist(); select(s.id, true); };
+$('sortDate').onclick = () => {
+  const dated = stops.filter(s => s.date).length;
+  if (!dated) { setSave('No places have a date yet (it comes from photo EXIF on upload, or type one in)', true); return; }
+  stops.sort((a, b) => (a.date || '9999').localeCompare(b.date || '9999'));
+  persist(); renderList(); renderDetail();
+};
+
+/* ---------- detail ---------- */
+function select(id, pan) {
+  selId = id;
+  renderList(); renderDetail();
+  const s = sel();
+  if (pan && s && hasLoc(s)) map.panTo([s.lat, s.lng]);
+  const li = document.querySelector(`#list li[data-id="${id}"]`); if (li) li.scrollIntoView({ block: 'nearest' });
+}
+function renderMedia(s) {
+  const n = s.media.length;
+  const c = cur[s.id] = Math.max(0, Math.min(cur[s.id] || 0, n - 1));
+  const p = s.media[c];
+  $('media').innerHTML = !n ? `<span class="none">drop photos here</span>`
+    : (isVid(p) ? `<video src="/${esc(p)}" controls playsinline></video>` : `<img src="${esc(p)}" alt="">`)
+      + (n > 1 ? `<button class="arrow l" data-go="-1" aria-label="Previous photo">‹</button><button class="arrow r" data-go="1" aria-label="Next photo">›</button><span class="count">${c + 1} / ${n}</span>` : '');
+  $('strip').innerHTML = s.media.map((q, i) => isVid(q)
+      ? `<button data-i="${i}" class="${i === c ? 'on' : ''}" title="${esc(q)}"><span class="vid">▶</span></button>`
+      : `<button data-i="${i}" class="${i === c ? 'on' : ''}" title="${esc(q)}" style="background-image:url('${esc(q)}')"></button>`).join('')
+    + `<button class="add" id="stripAdd" title="Add more photos">+</button>`;
+  $('mediaInfo').textContent = n ? `${n} photo${n > 1 ? 's' : ''} · first one is the cover` : '';
+  $('altRow').hidden = !n; if (n && document.activeElement !== $('fAlt')) $('fAlt').value = meta[p]?.alt || '';
+  $('removeMedia').disabled = !n;
+  $('mLeft').disabled = c <= 0; $('mRight').disabled = c >= n - 1;
+}
+const showMedia = i => { const s = sel(); if (!s) return; cur[s.id] = i; renderMedia(s); };
+$('media').addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) showMedia((cur[selId] || 0) + +b.dataset.go); });
+$('strip').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.id === 'stripAdd') $('replaceFile').click(); else showMedia(+b.dataset.i);
+});
+const shiftMedia = d => {
+  const s = sel(); if (!s) return; const i = cur[s.id] || 0, j = i + d;
+  if (j < 0 || j >= s.media.length) return;
+  [s.media[i], s.media[j]] = [s.media[j], s.media[i]]; cur[s.id] = j;
+  persist(); renderList(); renderMedia(s);
+};
+$('mLeft').onclick = () => shiftMedia(-1); $('mRight').onclick = () => shiftMedia(1);
+function renderDetail() {
+  const s = sel();
+  $('empty').hidden = !!s; $('detail').hidden = !s;
+  $('mapTip').style.display = s ? (hasLoc(s) ? 'none' : '') : '';
+  $('mapTip').textContent = s ? 'Click the map to pin this place' : 'Select a place, then click the map to pin it';
+  if (!s) return;
+  const i = idx();
+  $('pos').textContent = `Place ${i + 1} of ${stops.length}`;
+  $('prev').disabled = i <= 0; $('next').disabled = i >= stops.length - 1;
+  $('moveUp').disabled = i <= 0; $('moveDown').disabled = i >= stops.length - 1; $('merge').disabled = i <= 0;
+  $('copyPrev').disabled = i <= 0 || !hasLoc(stops[i - 1]);
+  $('lookupName').disabled = !hasLoc(s);
+  $('useGps').hidden = !(s.gps && (s.gps.lat !== s.lat || s.gps.lng !== s.lng));
+  renderMedia(s);
+  if (document.activeElement !== $('fName')) $('fName').value = s.name || '';
+  if (document.activeElement !== $('fTitle')) $('fTitle').value = s.title || '';
+  if (document.activeElement !== $('fNote')) $('fNote').value = s.note || '';
+  if (document.activeElement !== $('fRegion')) $('fRegion').value = s.region || '';
+  if (document.activeElement !== $('fDate')) $('fDate').value = s.date || '';
+  if (document.activeElement !== $('fSlug')) $('fSlug').value = s.slug || '';
+  $('fSlug').placeholder = slugify(s.name) || 'auto from place name';
+  $('slugHint').textContent = `/travel/${s.slug || slugify(s.name) || '…'}`;
+  fillLatLng(s);
+  disarm();
+}
+function fillLatLng(s) {
+  if (document.activeElement !== $('fLat')) $('fLat').value = hasLoc(s) ? s.lat : '';
+  if (document.activeElement !== $('fLng')) $('fLng').value = hasLoc(s) ? s.lng : '';
+}
+function setLoc(lat, lng) {
+  const s = sel(); if (!s) return;
+  s.lat = +(+lat).toFixed(6); s.lng = +(+lng).toFixed(6);
+  persist(); renderList(); renderDetail();
+}
+const bindText = (el, key) => el.addEventListener('input', () => { const s = sel(); if (!s) return; s[key] = el.value; persist(); renderList(); });
+bindText($('fName'), 'name'); bindText($('fTitle'), 'title'); bindText($('fNote'), 'note');
+bindText($('fRegion'), 'region'); bindText($('fDate'), 'date');
+$('fName').addEventListener('input', () => { const s = sel(); if (s) $('slugHint').textContent = `/travel/${s.slug || slugify(s.name) || '…'}`; });
+$('fSlug').addEventListener('input', () => { const s = sel(); if (!s) return; s.slug = slugify($('fSlug').value); $('slugHint').textContent = `/travel/${s.slug || slugify(s.name) || '…'}`; persist(); });
+$('fSlug').addEventListener('blur', () => { const s = sel(); if (s) $('fSlug').value = s.slug || ''; });
+$('fAlt').addEventListener('input', () => { const s = sel(); if (!s || !s.media.length) return; const p = s.media[cur[s.id] || 0]; meta[p] = { ...meta[p], alt: $('fAlt').value }; persist(); });
+['fLat', 'fLng'].forEach(id => $(id).addEventListener('change', () => {
+  const lat = parseFloat($('fLat').value), lng = parseFloat($('fLng').value);
+  if (Number.isFinite(lat) && Number.isFinite(lng)) { setLoc(lat, lng); map.panTo([lat, lng]); }
+}));
+$('clearLoc').onclick = () => { const s = sel(); if (!s) return; delete s.lat; delete s.lng; persist(); renderList(); renderDetail(); };
+$('copyPrev').onclick = () => { const p = stops[idx() - 1]; if (p && hasLoc(p)) { const s = sel(); if (!s.name) s.name = p.name; setLoc(p.lat, p.lng); $('fName').value = s.name; } };
+$('useGps').onclick = () => { const s = sel(); if (s?.gps) { setLoc(s.gps.lat, s.gps.lng); map.panTo([s.lat, s.lng]); } };
+$('prev').onclick = () => { const i = idx(); if (i > 0) select(stops[i - 1].id, true); };
+$('next').onclick = () => { const i = idx(); if (i < stops.length - 1) select(stops[i + 1].id, true); };
+const move = d => { const i = idx(), j = i + d; if (j < 0 || j >= stops.length) return; [stops[i], stops[j]] = [stops[j], stops[i]]; persist(); renderList(); renderDetail(); };
+$('moveUp').onclick = () => move(-1); $('moveDown').onclick = () => move(1);
+document.addEventListener('keydown', e => {
+  if (!e.altKey) return;
+  if (e.key === 'ArrowUp') { e.preventDefault(); $('prev').click(); }
+  if (e.key === 'ArrowDown') { e.preventDefault(); $('next').click(); }
+});
+
+// delete: click twice to confirm
+let armT;
+function disarm() { clearTimeout(armT); $('del').classList.remove('armed'); $('del').textContent = 'Delete place'; }
+$('del').onclick = async () => {
+  const b = $('del');
+  if (!b.classList.contains('armed')) { b.classList.add('armed'); b.textContent = 'Click again to delete'; armT = setTimeout(disarm, 3000); return; }
+  const i = idx(), s = stops[i];
+  stops.splice(i, 1);
+  for (const p of s.media) await deleteFile(p);
+  persist();
+  select(stops[Math.min(i, stops.length - 1)]?.id ?? null, true);
+};
+async function deleteFile(p) { if (p) await fetch('/api/file?src=' + encodeURIComponent(p), { method: 'DELETE' }).catch(() => {}); delete meta[p]; }
+
+// Fold this stop into the one above: its photos go to the end of the previous stop's list.
+$('merge').onclick = () => {
+  const i = idx(); if (i <= 0) return;
+  const s = stops[i], prev = stops[i - 1];
+  prev.media.push(...s.media);
+  if (!hasLoc(prev) && hasLoc(s)) { prev.lat = s.lat; prev.lng = s.lng; }
+  for (const k of ['name', 'region', 'title', 'note', 'date']) if (!prev[k] && s[k]) prev[k] = s[k];
+  stops.splice(i, 1);
+  persist();
+  select(prev.id, true);
+  cur[prev.id] = prev.media.length - s.media.length; renderMedia(prev);
+  setQueue(`Merged into place ${i}: it now has ${prev.media.length} photo${prev.media.length > 1 ? 's' : ''}`);
+  setTimeout(() => setQueue(''), 3000);
+};
+
+$('removeMedia').onclick = async () => {
+  const s = sel(); if (!s || !s.media.length) return;
+  const c = cur[s.id] || 0;
+  const [p] = s.media.splice(c, 1);
+  await deleteFile(p);
+  persist(); renderList(); renderDetail();
+};
+$('replace').onclick = () => $('replaceFile').click();
+$('replaceFile').onchange = async e => { const fs = [...e.target.files]; e.target.value = ''; if (fs.length && sel()) await addToStop(sel(), fs); };
+$('media').addEventListener('dragover', e => { e.preventDefault(); e.stopPropagation(); $('media').classList.add('over'); });
+$('media').addEventListener('dragleave', () => $('media').classList.remove('over'));
+$('media').addEventListener('drop', async e => {
+  e.preventDefault(); e.stopPropagation(); $('media').classList.remove('over'); hideDropAll();
+  if (sel()) await addToStop(sel(), [...e.dataTransfer.files]);
+});
+// Add one or more files to an existing stop.
+async function addToStop(s, files) {
+  const errs = []; let added = 0;
+  for (let i = 0; i < files.length; i++) {
+    setQueue(`Adding ${i + 1} of ${files.length} to this place: ${files[i].name}`, errs);
+    try {
+      const info = await processFile(files[i]);
+      if (info.warn) errs.push(info.warn);
+      s.media.push(info.path); added++;
+      if (info.taken && !s.date) s.date = info.taken.slice(0, 7);
+      if (info.gps) { s.gps ||= info.gps; if (!hasLoc(s)) { s.lat = info.gps.lat; s.lng = info.gps.lng; } }
+      persist(); renderList();
+    } catch (err) { errs.push(`${files[i].name}: ${err.message}`); }
+  }
+  if (added && s.id === selId) { cur[s.id] = s.media.length - added; renderDetail(); }
+  setQueue(added ? `Added ${added} to this place` : '', errs);
+  if (!errs.length) setTimeout(() => setQueue(''), 3000);
+}
+
+/* ---------- uploading ---------- */
+const wait = ms => new Promise(r => setTimeout(r, ms));
+const km = (a, b) => { const R = 6371, t = Math.PI / 180, dLat = (b.lat - a.lat) * t, dLng = (b.lng - a.lng) * t; const h = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * t) * Math.cos(b.lat * t) * Math.sin(dLng / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); };
+function setQueue(msg, errs = []) {
+  const q = $('queue');
+  q.classList.toggle('show', !!(msg || errs.length));
+  q.innerHTML = esc(msg) + (errs.length ? `<div class="errs">${errs.map(esc).join('<br>')}</div>` : '');
+}
+
+// Pull GPS + date taken out of a JPEG's EXIF block.
+async function readExif(file) {
+  try {
+    const v = new DataView(await file.slice(0, 256 * 1024).arrayBuffer());
+    if (v.getUint16(0) !== 0xFFD8) return {};
+    let o = 2;
+    while (o + 4 < v.byteLength) {
+      const marker = v.getUint16(o);
+      if ((marker & 0xFF00) !== 0xFF00) break;
+      if (marker === 0xFFE1 && v.getUint32(o + 4) === 0x45786966) return parseTiff(v, o + 10);
+      o += 2 + v.getUint16(o + 2);
+    }
+  } catch (e) { /* unreadable EXIF is fine */ }
+  return {};
+}
+function parseTiff(v, t) {
+  const le = v.getUint16(t) === 0x4949;
+  const u16 = o => v.getUint16(o, le), u32 = o => v.getUint32(o, le);
+  const ifd = off => { const out = {}, n = u16(t + off); for (let i = 0; i < n; i++) { const e = t + off + 2 + i * 12; out[u16(e)] = { count: u32(e + 4), at: e + 8 }; } return out; };
+  const ascii = en => { const p = en.count > 4 ? t + u32(en.at) : en.at; let s = ''; for (let i = 0; i < en.count; i++) { const c = v.getUint8(p + i); if (!c) break; s += String.fromCharCode(c); } return s; };
+  const rat = o => u32(o) / u32(o + 4);
+  const out = {};
+  const ifd0 = ifd(u32(t + 4));
+  if (ifd0[0x8769]) {
+    const d = ifd(u32(ifd0[0x8769].at))[0x9003];
+    const m = d && ascii(d).match(/(\d{4}):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)/);
+    if (m) out.taken = `${m[1]}-${m[2]}-${m[3]}T${m[4]}:${m[5]}:${m[6]}`;
+  }
+  if (ifd0[0x8825]) {
+    const g = ifd(u32(ifd0[0x8825].at));
+    const dms = en => { const p = t + u32(en.at); return rat(p) + rat(p + 8) / 60 + rat(p + 16) / 3600; };
+    if (g[2] && g[4]) {
+      let lat = dms(g[2]), lng = dms(g[4]);
+      if (g[1] && ascii(g[1]) === 'S') lat = -lat;
+      if (g[3] && ascii(g[3]) === 'W') lng = -lng;
+      if (Number.isFinite(lat) && Number.isFinite(lng) && (lat || lng)) out.gps = { lat: +lat.toFixed(6), lng: +lng.toFixed(6) };
+    }
+  }
+  return out;
+}
+
+// Shrink photos so 50 of them load fast on a phone.
+async function shrink(file) {
+  let bmp;
+  try { bmp = await createImageBitmap(file); }
+  catch (e) { throw new Error(/heic|heif/i.test(file.type + file.name) ? "this browser can't read HEIC. Export it as JPEG (or use Safari)" : "couldn't read this image"); }
+  const scale = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
+  const c = document.createElement('canvas');
+  c.width = Math.round(bmp.width * scale); c.height = Math.round(bmp.height * scale);
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+  ctx.drawImage(bmp, 0, 0, c.width, c.height);
+  return new Promise((res, rej) => c.toBlob(b => b ? res({ blob: b, width: c.width, height: c.height }) : rej(new Error('could not encode image')), 'image/jpeg', 0.85));
+}
+
+async function upload(name, blob) {
+  const r = await fetch(`/api/upload?name=${encodeURIComponent(name)}`, { method: 'POST', body: blob });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.error || `upload failed (${r.status})`);
+  return j.src;
+}
+
+async function processFile(file) {
+  if (file.type.startsWith('video/') || /\.(mp4|mov|m4v|webm)$/i.test(file.name)) throw new Error('videos are not supported on the travel page, photos only');
+  const exif = await readExif(file);
+  const { blob, width, height } = await shrink(file);
+  const base = file.name.replace(/\.[^.]+$/, '');
+  const path = await upload(base + '.jpg', blob);
+  meta[path] = { width, height, alt: '', taken: exif.taken };
+  return { path, ...exif };
+}
+
+async function addFiles(files) {
+  files = [...files].filter(f => /^(image|video)\//.test(f.type) || /\.(heic|heif|mov|mp4|m4v)$/i.test(f.name));
+  if (!files.length) return;
+  const errs = [], infos = [];
+  for (let i = 0; i < files.length; i++) {
+    setQueue(`Uploading ${i + 1} of ${files.length}: ${files[i].name}`, errs);
+    try {
+      const info = await processFile(files[i]);
+      if (info.warn) errs.push(info.warn);
+      infos.push(info);
+    } catch (err) { errs.push(`${files[i].name}: ${err.message}`); }
+  }
+  // Oldest first, then fold each photo into the previous new place when it was
+  // taken within ~5 km of it (or, with no GPS on either, on the same day).
+  infos.sort((a, b) => (a.taken || '9999').localeCompare(b.taken || '9999'));
+  const added = [];
+  for (const info of infos) {
+    const last = added[added.length - 1];
+    const near = last && (info.gps && last.gps ? km(info.gps, last.gps) < 5
+      : !info.gps && !last.gps && info.taken && last.firstTaken && info.taken.slice(0, 10) === last.firstTaken.slice(0, 10));
+    if (near) { last.media.push(info.path); continue; }
+    const s = { id: uid(), name: '', region: '', title: '', note: '', media: [info.path] };
+    if (info.taken) { s.date = info.taken.slice(0, 7); s.firstTaken = info.taken; }
+    if (info.gps) { s.gps = info.gps; s.lat = info.gps.lat; s.lng = info.gps.lng; }
+    added.push(s);
+  }
+  added.forEach(s => delete s.firstTaken);
+  stops.push(...added);
+  persist();
+  const withGps = added.filter(s => s.gps).length;
+  setQueue(added.length ? `Added ${infos.length} photo${infos.length > 1 ? 's' : ''} as ${added.length} place${added.length > 1 ? 's' : ''} · ${withGps} pinned automatically from photo GPS. Use "Merge into previous place" to combine more.` : '', errs);
+  if (withGps) setTimeout(() => added.filter(s => s.gps && !s.name).reduce((p, s) => p.then(() => autoName(s)).then(() => wait(1100)), Promise.resolve()), 300);
+  if (added.length) select(added[0].id, true); else renderList();
+  if (!errs.length) setTimeout(() => setQueue(''), 5000);
+}
+
+$('drop').onclick = () => $('file').click();
+$('drop').onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('file').click(); } };
+$('file').onchange = e => { addFiles(e.target.files); e.target.value = ''; };
+// whole-window drop
+let dragDepth = 0;
+const isFileDrag = e => [...(e.dataTransfer?.types || [])].includes('Files');
+function hideDropAll() { dragDepth = 0; $('dropAll').classList.remove('show'); }
+window.addEventListener('dragenter', e => { if (!isFileDrag(e)) return; dragDepth++; $('dropAll').classList.add('show'); });
+window.addEventListener('dragleave', e => { if (!isFileDrag(e)) return; if (--dragDepth <= 0) hideDropAll(); });
+window.addEventListener('dragover', e => { if (isFileDrag(e)) e.preventDefault(); });
+window.addEventListener('drop', e => { if (!isFileDrag(e)) return; e.preventDefault(); hideDropAll(); addFiles(e.dataTransfer.files); });
+// let the media box receive drops above the overlay
+$('dropAll').addEventListener('dragover', e => {
+  const r = $('media').getBoundingClientRect();
+  const onMedia = !$('detail').hidden && e.clientX > r.left && e.clientX < r.right && e.clientY > r.top && e.clientY < r.bottom;
+  $('dropAll').textContent = onMedia ? 'Drop to add to this place' : 'Drop to add photos';
+  $('dropAll').dataset.media = onMedia ? '1' : '';
+});
+$('dropAll').addEventListener('drop', async e => {
+  if ($('dropAll').dataset.media && sel()) {
+    e.preventDefault(); e.stopPropagation(); hideDropAll();
+    await addToStop(sel(), [...e.dataTransfer.files]);
+  }
+});
+
+/* ---------- map ---------- */
+const map = L.map('map', { zoomControl: true, worldCopyJump: true }).setView([30, 0], 2);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom:19, attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }).addTo(map);
+const trail = L.polyline([], { color: '#FF5A3C', weight: 3, dashArray: '2 8', lineCap: 'round', opacity: .7 }).addTo(map);
+const layer = L.layerGroup().addTo(map);
+function renderMarkers() {
+  layer.clearLayers();
+  trail.setLatLngs(stops.filter(hasLoc).map(s => [s.lat, s.lng]));
+  stops.forEach((s, i) => {
+    if (!hasLoc(s)) return;
+    const isSel = s.id === selId, size = isSel ? 38 : 26;
+    const m = L.marker([s.lat, s.lng], {
+      draggable: isSel, zIndexOffset: isSel ? 1000 : 0,
+      icon: L.divIcon({ className: '', iconSize: [size, size], iconAnchor: [size / 2, size], html: `<div class="mk ${isSel ? 'sel' : ''}"><b>${i + 1}</b></div>` }),
+      title: s.name || s.title || `Place ${i + 1}`,
+    }).addTo(layer);
+    m.on('click', () => select(s.id, false));
+    m.on('dragend', () => { const p = m.getLatLng(); setLoc(p.lat, p.lng); });
+  });
+}
+map.on('click', e => { if (sel()) setLoc(e.latlng.lat, e.latlng.lng); });
+
+// place search (OpenStreetMap Nominatim), worldwide
+let qT;
+$('q').addEventListener('input', () => { clearTimeout(qT); qT = setTimeout(search, 450); });
+$('q').addEventListener('keydown', e => { if (e.key === 'Enter') { clearTimeout(qT); search(); } if (e.key === 'Escape') $('results').classList.remove('show'); });
+async function search() {
+  const q = $('q').value.trim(); const ul = $('results');
+  if (q.length < 3) { ul.classList.remove('show'); return; }
+  try {
+    const r = await fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=6&addressdetails=1&q=${encodeURIComponent(q)}`);
+    const res = await r.json();
+    ul.innerHTML = res.length ? res.map((x, i) => `<li data-i="${i}">${esc(x.display_name)}</li>`).join('') : '<li>No matches</li>';
+    ul.classList.add('show');
+    ul.onclick = e => {
+      const x = res[e.target.closest('li')?.dataset.i]; if (!x) return;
+      ul.classList.remove('show');
+      map.setView([+x.lat, +x.lon], 13);
+      const s = sel();
+      if (s) { if (!s.name) { s.name = x.name || x.display_name.split(',')[0]; $('fName').value = s.name; } if (!s.region) s.region = regionOf(x.address); setLoc(+x.lat, +x.lon); }
+    };
+  } catch (e) { ul.innerHTML = '<li>Search failed (are you online?)</li>'; ul.classList.add('show'); }
+}
+// Add places by typing/pasting names. Nominatim allows ~1 request/second, so batches are spaced out.
+const geocode = async q => {
+  const r = await fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&addressdetails=1&q=${encodeURIComponent(q)}`);
+  if (!r.ok) throw new Error(`search failed (${r.status})`);
+  return (await r.json())[0];
+};
+
+const addr = $('addr');
+const fitAddr = () => { addr.style.height = 'auto'; addr.style.height = addr.scrollHeight + 4 + 'px'; };
+addr.addEventListener('input', fitAddr);
+addr.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); addByAddress(); } });
+async function addByAddress() {
+  const lines = addr.value.split('\n').map(l => l.trim()).filter(Boolean);
+  if (!lines.length) return;
+  addr.disabled = true;
+  const errs = [], added = [];
+  for (let i = 0; i < lines.length; i++) {
+    setQueue(`Finding ${i + 1} of ${lines.length}: ${lines[i]}`, errs);
+    try {
+      const x = await geocode(lines[i]);
+      if (!x) { errs.push(`No match for "${lines[i]}". Try adding the street or city`); continue; }
+      // "721 Government St" → keep what was typed; "Fan Tan Alley" → use the place's proper name
+      const name = /^\d/.test(lines[i]) ? lines[i].split(',')[0] : (x.name || x.display_name.split(',')[0] || lines[i]);
+      const s = { id: uid(), name, region: regionOf(x.address), title: '', note: '', media: [], address: lines[i], lat: +(+x.lat).toFixed(6), lng: +(+x.lon).toFixed(6) };
+      const at = idx();
+      stops.splice(at < 0 ? stops.length : at + 1, 0, s);
+      selId = s.id; added.push(s);
+      persist(); renderList();
+    } catch (err) { errs.push(`${lines[i]}: ${err.message} (are you online?)`); }
+    if (i < lines.length - 1) await wait(1100);
+  }
+  // keep lines that failed so they can be fixed and retried
+  addr.value = lines.filter(l => !added.some(s => s.address === l)).join('\n');
+  addr.disabled = false; fitAddr(); addr.focus();
+  setQueue(added.length ? `Added ${added.length} place${added.length > 1 ? 's' : ''}` : '', errs);
+  if (added.length) {
+    select(added[added.length - 1].id, false);
+    if (added.length === 1) map.setView([added[0].lat, added[0].lng], 12);
+    else map.fitBounds(L.latLngBounds(added.map(s => [s.lat, s.lng])).pad(.2));
+  }
+  if (!errs.length) setTimeout(() => setQueue(''), 4000);
+}
+
+// "Banff, Alberta, Canada" from a Nominatim address block.
+function regionOf(a) {
+  if (!a) return '';
+  const town = a.city || a.town || a.village || a.municipality || a.county || '';
+  return [town, a.state || a.province || a.region, a.country].filter(Boolean).filter((v, i, arr) => arr.indexOf(v) === i).join(', ');
+}
+// Fill in a place's name/region from its pin (used for photos with GPS).
+async function autoName(s, force) {
+  if (!hasLoc(s)) return;
+  const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=14&addressdetails=1&lat=${s.lat}&lon=${s.lng}`);
+  const x = await r.json();
+  const a = x.address || {};
+  if (force || !s.name) s.name = x.name || a.attraction || a.tourism || a.natural || a.leisure || a.suburb || a.city || a.town || a.village || x.display_name?.split(',')[0] || s.name;
+  if (force || !s.region) s.region = regionOf(a);
+  persist(); renderList(); if (s.id === selId) renderDetail();
+}
+$('lookupName').onclick = async () => {
+  const s = sel(); if (!s || !hasLoc(s)) return;
+  $('lookupName').textContent = 'Looking up…';
+  try { await autoName(s, true); } catch (e) { setSave('Lookup failed (are you online?)', true); }
+  $('lookupName').textContent = 'Name + region from pin';
+};
+
+// Rename photos to sahil-sanghvi-<place>-<n>.jpg (an image-search signal).
+$('tidy').onclick = async () => {
+  const b = $('tidy'); b.disabled = true; b.textContent = 'Tidying…';
+  try {
+    clearTimeout(saveT);
+    const body = JSON.stringify(stops.map(serialize));
+    await (saving = saving.then(() => fetch('/api/stops', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body })));
+    const r = await fetch('/api/tidy', { method: 'POST' });
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.error || r.status);
+    for (const k of Object.keys(meta)) delete meta[k];
+    stops = j.stops.map(s => normalize({ id: s.id || uid(), ...s }));
+    setSave(j.renamed ? `Renamed ${j.renamed} photo${j.renamed > 1 ? 's' : ''}` : 'File names already tidy');
+    renderList(); renderDetail();
+  } catch (e) { setSave('Tidy failed: ' + e.message, true); }
+  b.disabled = false; b.textContent = 'Tidy file names';
+};
+
+/* ---------- boot ---------- */
+fetch('/api/stops').then(r => r.json()).then(data => {
+  stops = data.map(s => normalize({ id: s.id || uid(), ...s }));
+  setSave('All changes saved');
+  renderList();
+  if (stops.length) select(stops[0].id, false); else renderDetail();
+  const pts = stops.filter(hasLoc);
+  if (pts.length) map.fitBounds(L.latLngBounds(pts.map(s => [s.lat, s.lng])).pad(.15));
+}).catch(() => setSave('Could not load places. Start it with: npm run travel', true));
+</script>
+</body>
+</html>

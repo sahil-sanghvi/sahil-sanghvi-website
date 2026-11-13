@@ -119,6 +119,9 @@ export function OsShell({
             <Link href="/active-coursework" className="hover:text-primary transition-colors">
               Active Coursework
             </Link>
+            <Link href="/travel" className="hover:text-primary transition-colors">
+              Travel
+            </Link>
           </nav>
         </div>
         <div className="flex shrink-0 items-center gap-4 text-[10px] text-muted-foreground">

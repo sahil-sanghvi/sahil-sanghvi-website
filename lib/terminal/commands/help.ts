@@ -14,7 +14,9 @@ export const helpCommand: Command = {
         .map((c) => `  ${c.usage.padEnd(20)} ${c.summary}`),
       "",
       "Tab completes when the input isn't empty. Esc always leaves the terminal.",
-      "\"Prefer a normal page? View the site →\" link is above the prompt."
+      "Inside a project directory, `run` (or `./launch`) opens it: the deployed",
+      "site when there is one, otherwise the GitHub repo.",
+      "The \"Prefer a normal page? View the site\" link at the top leaves the terminal."
     );
   },
 };

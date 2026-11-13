@@ -13,6 +13,7 @@ import { historyCommand } from "./history";
 import { dateCommand } from "./date";
 import { exitCommand } from "./exit";
 import { gitCommand } from "./git";
+import { runCommand } from "./run";
 
 const registry: Command[] = [
   helpCommand,
@@ -25,6 +26,7 @@ const registry: Command[] = [
   clearCommand,
   treeCommand,
   openCommand,
+  runCommand,
   historyCommand,
   dateCommand,
   exitCommand,
