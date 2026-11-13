@@ -332,6 +332,14 @@ export function TrailGame({ stops }: { stops: TrailStop[] }) {
         </Link>
       </div>
 
+      {/* Back to the main site: top-right on desktop, under the progress bar on phones. */}
+      <Link
+        href="/"
+        className="border-border bg-ink-950/95 text-foreground hover:border-signal-500 hover:text-signal-500 absolute top-[5.5rem] right-3 z-[500] border px-4 py-2.5 text-xs font-bold tracking-widest uppercase transition-colors sm:top-3"
+      >
+        ← Back to site
+      </Link>
+
       {/* Toast */}
       <div
         role="status"
@@ -400,6 +408,9 @@ export function TrailGame({ stops }: { stops: TrailStop[] }) {
               <Link href="/travel" className="border-border hover:border-signal-500 hover:text-signal-500 border px-4 py-2 text-xs font-bold tracking-widest uppercase">
                 All photos
               </Link>
+              <Link href="/" className="border-border hover:border-signal-500 hover:text-signal-500 border px-4 py-2 text-xs font-bold tracking-widest uppercase">
+                Back to site
+              </Link>
             </div>
           </div>
         </div>
@@ -414,9 +425,17 @@ export function TrailGame({ stops }: { stops: TrailStop[] }) {
       >
         <div className="flex items-center justify-between">
           <p className="text-section-head text-muted-foreground uppercase">Travel(7) · trail mode</p>
-          <Link href="/travel" className="text-furniture text-muted-foreground hover:text-signal-500">
-            ← skip to photos
-          </Link>
+          <div className="flex items-center gap-5">
+            <Link href="/travel" className="text-furniture text-muted-foreground hover:text-signal-500 hidden sm:inline">
+              skip to photos
+            </Link>
+            <Link
+              href="/"
+              className="border-border text-foreground hover:border-signal-500 hover:text-signal-500 border px-4 py-2 text-xs font-bold tracking-widest uppercase transition-colors"
+            >
+              ← Back to site
+            </Link>
+          </div>
         </div>
         <div className="mx-auto w-full max-w-3xl">
           <p className="text-flag text-signal-500">$ ./trail --follow</p>
