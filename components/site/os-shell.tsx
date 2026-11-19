@@ -20,7 +20,7 @@ export type ShellExperience = Experience;
 export type ShellProject = Project;
 export type ShellCourse = Course;
 export type ShellCertification = Certification;
-export type ShellMetrics = { repos: number; stars: number; available: boolean };
+export type ShellMetrics = { repos: number; stars: number; available: boolean; travelPlaces: number };
 
 type FileId = "readme" | "experience" | "projects" | "skills" | "courses" | "certifications" | "contact";
 
@@ -119,9 +119,11 @@ export function OsShell({
             <Link href="/active-coursework" className="hover:text-primary transition-colors">
               Active Coursework
             </Link>
-            <Link href="/travel" className="hover:text-primary transition-colors">
-              Travel
-            </Link>
+            {metrics.travelPlaces > 0 ? (
+              <Link href="/travel" className="hover:text-primary transition-colors">
+                Travel
+              </Link>
+            ) : null}
           </nav>
         </div>
         <div className="flex shrink-0 items-center gap-4 text-[10px] text-muted-foreground">
@@ -264,6 +266,7 @@ export function OsShell({
                     skills={skills}
                     projects={projects}
                     timeline={timeline}
+                    showTravel={metrics.travelPlaces > 0}
                     onContactClick={() => openFile("contact")}
                   />
                 )}

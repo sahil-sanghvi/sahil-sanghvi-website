@@ -36,6 +36,8 @@ Open http://localhost:3000.
 
 ## Travel photos (`/travel`)
 
+Step-by-step guide: **[TRAVEL-PHOTOS.md](TRAVEL-PHOTOS.md)**.
+
 A map of places plus their photos, one page per place (`/travel/<place>`),
 built so the photos show up when someone searches "Sahil Sanghvi".
 

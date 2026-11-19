@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "sahil-sanghvi(1) — terminal",
+  title: "sahil-sanghvi(1) | terminal",
   description: "Navigate a virtual filesystem of Sahil's projects using real commands.",
   alternates: { canonical: "/terminal" },
 };

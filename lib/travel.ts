@@ -1,4 +1,5 @@
 import raw from "./content/static/travel.json";
+import { noDash } from "./no-dash";
 
 /**
  * Travel photos. The data lives in lib/content/static/travel.json and the
@@ -78,6 +79,12 @@ export function getTravelStop(slug: string): TravelStop | null {
   return getTravelStops().find((s) => s.slug === slug) ?? null;
 }
 
+/** Caption + story as one dash-free sentence run, for descriptions. */
+export function storyText(stop: TravelStop): string | undefined {
+  const parts = [stop.title, stop.note].filter(Boolean).map((t) => noDash(t!).replace(/[.!?]?$/, (m) => m || "."));
+  return parts.length ? parts.join(" ") : undefined;
+}
+
 /** "Moraine Lake, Banff, Alberta, Canada" */
 export function placeLabel(stop: TravelStop): string {
   return stop.region ? `${stop.name}, ${stop.region}` : stop.name;
@@ -88,11 +95,11 @@ export function placeLabel(stop: TravelStop): string {
 export function photoAlt(stop: TravelStop, photo: TravelPhoto, index: number): string {
   if (photo.alt?.trim()) {
     const alt = photo.alt.trim();
-    return /sahil/i.test(alt) ? alt : `${OWNER}: ${alt}`;
+    return noDash(/sahil/i.test(alt) ? alt : `${OWNER}: ${alt}`);
   }
-  const what = stop.title ? ` — ${stop.title}` : "";
+  const what = stop.title ? `: ${stop.title}` : "";
   const nth = stop.photos.length > 1 ? ` (photo ${index + 1} of ${stop.photos.length})` : "";
-  return `${OWNER} at ${placeLabel(stop)}${what}${nth}`;
+  return noDash(`${OWNER} at ${placeLabel(stop)}${what}${nth}`);
 }
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -158,9 +165,9 @@ export function imageObjectLd(origin: string, stop: TravelStop, photo: TravelPho
     url: `${origin}${photo.src}`,
     width: photo.width,
     height: photo.height,
-    name: `${OWNER} — ${placeLabel(stop)}`,
+    name: noDash(`${OWNER} at ${placeLabel(stop)}`),
     caption: photoAlt(stop, photo, index),
-    description: [stop.title, stop.note].filter(Boolean).join(" — ") || undefined,
+    description: storyText(stop),
     ...(photo.taken || stop.date ? { dateCreated: photo.taken ?? stop.date } : {}),
     creator: { "@id": `${origin}/#person` },
     author: { "@id": `${origin}/#person` },

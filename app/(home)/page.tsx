@@ -11,6 +11,8 @@ import {
 } from "@/lib/content";
 import { OsShell } from "@/components/site/os-shell";
 import { buildTimeline } from "@/lib/site/timeline";
+import { noDash } from "@/lib/no-dash";
+import { getTravelStops } from "@/lib/travel";
 
 export const revalidate = 3600;
 
@@ -25,9 +27,9 @@ function truncate(text: string, max = 155): string {
 
 export async function generateMetadata(): Promise<Metadata> {
   const profile = await getProfile();
-  const description = truncate(profile.bio_md ?? profile.headline);
+  const description = truncate(noDash(profile.bio_md ?? profile.headline));
   return {
-    title: `${profile.full_name} — ${profile.headline}`,
+    title: `${profile.full_name} | ${noDash(profile.headline)}`,
     description,
     alternates: { canonical: "/" },
     openGraph: { title: profile.full_name, description, url: "/" },
@@ -65,6 +67,7 @@ export default async function HomePage() {
         repos: projects.length,
         stars,
         available: profile.available_for_work,
+        travelPlaces: getTravelStops().length,
       }}
     />
   );

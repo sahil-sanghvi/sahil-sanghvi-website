@@ -20,7 +20,7 @@ function summary() {
   const stops = getTravelStops();
   const photos = stops.reduce((n, s) => n + s.photos.length, 0);
   const years = stops.map((s) => s.date?.slice(0, 4)).filter(Boolean).sort() as string[];
-  const span = years.length ? (years[0] === years.at(-1) ? years[0] : `${years[0]}–${years.at(-1)}`) : null;
+  const span = years.length ? (years[0] === years.at(-1) ? years[0] : `${years[0]} to ${years.at(-1)}`) : null;
   return { stops, photos, span };
 }
 
@@ -28,18 +28,20 @@ export function generateMetadata(): Metadata {
   const { stops, photos } = summary();
   const places = stops.slice(0, 4).map((s) => s.name).join(", ");
   const description = stops.length
-    ? `Travel photos by ${OWNER}: ${photos} photos from ${stops.length} places${places ? `, including ${places}` : ""}.`
+    ? `Travel photos by ${OWNER}: ${photos} photo${photos === 1 ? "" : "s"} from ${stops.length} place${stops.length === 1 ? "" : "s"}${places ? `, including ${places}` : ""}.`
     : `Travel photos by ${OWNER}.`;
   const cover = stops[0]?.photos[0];
   const images = cover
     ? [{ url: cover.src, width: cover.width, height: cover.height, alt: `${OWNER} at ${placeLabel(stops[0])}` }]
     : undefined;
   return {
-    title: `${OWNER} — Travel Photos`,
+    title: `${OWNER} | Travel Photos`,
     description,
     alternates: { canonical: "/travel" },
-    openGraph: { title: `${OWNER} — Travel Photos`, description, url: "/travel", type: "website", images },
-    twitter: { card: "summary_large_image", title: `${OWNER} — Travel Photos`, description, images: images?.map((i) => i.url) },
+    // Until the first place is published there's nothing worth indexing.
+    ...(stops.length === 0 ? { robots: { index: false, follow: true } } : {}),
+    openGraph: { title: `${OWNER} | Travel Photos`, description, url: "/travel", type: "website", images },
+    twitter: { card: "summary_large_image", title: `${OWNER} | Travel Photos`, description, images: images?.map((i) => i.url) },
   };
 }
 
@@ -52,7 +54,7 @@ export default function TravelPage() {
     "@type": "CollectionPage",
     "@id": `${origin}/travel`,
     url: `${origin}/travel`,
-    name: `${OWNER} — Travel Photos`,
+    name: `${OWNER} | Travel Photos`,
     about: { "@id": `${origin}/#person` },
     author: { "@id": `${origin}/#person` },
     mainEntity: {
@@ -60,7 +62,7 @@ export default function TravelPage() {
       name: `Travel photos by ${OWNER}`,
       image: stops.flatMap((s) => s.photos.map((p, i) => imageObjectLd(origin, s, p, i))),
     },
-    hasPart: stops.map((s) => ({ "@type": "WebPage", url: `${origin}/travel/${s.slug}`, name: `${OWNER} — ${placeLabel(s)}` })),
+    hasPart: stops.map((s) => ({ "@type": "WebPage", url: `${origin}/travel/${s.slug}`, name: `${OWNER} at ${placeLabel(s)}` })),
   };
 
   return (

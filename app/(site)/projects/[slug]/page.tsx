@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProject, getProjects } from "@/lib/content";
+import { noDash } from "@/lib/no-dash";
 
 export const revalidate = 3600;
 
@@ -18,9 +19,9 @@ export async function generateMetadata({
   const { slug } = await params;
   const project = await getProject(slug);
   if (!project) return {};
-  const description = project.tagline ?? undefined;
+  const description = noDash(project.tagline);
   return {
-    title: `${project.title} — sahil-sanghvi(1)`,
+    title: `${project.title} | sahil-sanghvi(1)`,
     description,
     alternates: { canonical: `/projects/${slug}` },
     openGraph: { title: project.title, description, url: `/projects/${slug}` },
@@ -43,7 +44,7 @@ export default async function ProjectDetailPage({
     <main className="mx-auto max-w-4xl px-6 py-16">
       <p className="text-section-head text-muted-foreground uppercase">{project.title}</p>
       {project.tagline ? (
-        <p className="text-display text-foreground mt-3 max-w-none">{project.tagline}</p>
+        <p className="text-display text-foreground mt-3 max-w-none">{noDash(project.tagline)}</p>
       ) : null}
 
       <div className="mt-6 flex flex-wrap gap-4 text-flag">

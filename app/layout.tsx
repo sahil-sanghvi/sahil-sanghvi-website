@@ -3,6 +3,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { IBM_Plex_Mono, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import { MotionProvider } from "@/components/motion/motion-provider";
 import { siteUrl } from "@/lib/site-url";
+import { noDash } from "@/lib/no-dash";
 import { getProfile, getExperience, getEducation } from "@/lib/content";
 import "./globals.css";
 
@@ -72,19 +73,19 @@ export default async function RootLayout({
     "@id": `${origin}/#person`,
     name: profile.full_name,
     url: origin,
-    description: profile.headline,
+    description: noDash(profile.headline),
     sameAs: Object.values(profile.socials),
     ...(profile.public_email ? { email: profile.public_email } : {}),
     ...(profile.location ? { address: { "@type": "PostalAddress", addressLocality: profile.location } } : {}),
     ...(current
       ? {
-          jobTitle: current.role,
-          worksFor: { "@type": "Organization", name: current.org },
+          jobTitle: noDash(current.role),
+          worksFor: { "@type": "Organization", name: noDash(current.org) },
         }
       : {}),
     ...(education.length > 0
       ? {
-          alumniOf: education.map((e) => ({ "@type": "CollegeOrUniversity", name: e.institution })),
+          alumniOf: education.map((e) => ({ "@type": "CollegeOrUniversity", name: noDash(e.institution) })),
         }
       : {}),
   };

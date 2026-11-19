@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
  * has no history to go back to — in that case there's no back control, but
  * the brand link below still gets you back to the portfolio.
  */
-export function Navbar() {
+export function Navbar({ showTravel = false }: { showTravel?: boolean }) {
   const router = useRouter();
   const [canGoBack, setCanGoBack] = useState(false);
 
@@ -37,15 +37,17 @@ export function Navbar() {
         <Link href="/" className="text-furniture text-foreground shrink-0 tracking-wide">
           SAHIL-SANGHVI(1)
         </Link>
-        <Link
-          href="/travel"
-          className="text-furniture text-muted-foreground hover:text-foreground ml-auto shrink-0 tracking-wide transition-colors"
-        >
-          TRAVEL(7)
-        </Link>
+        {showTravel ? (
+          <Link
+            href="/travel"
+            className="text-furniture text-muted-foreground hover:text-foreground ml-auto shrink-0 tracking-wide transition-colors"
+          >
+            TRAVEL(7)
+          </Link>
+        ) : null}
         <Link
           href="/terminal"
-          className="text-furniture text-signal-500 hover:text-signal-600 shrink-0 tracking-wide transition-colors"
+          className={`text-furniture text-signal-500 hover:text-signal-600 shrink-0 tracking-wide transition-colors ${showTravel ? "" : "ml-auto"}`}
         >
           → TERMINAL(1)
         </Link>

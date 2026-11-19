@@ -5,7 +5,7 @@ import { TrailGame } from "@/components/travel/trail-game";
 // The game is a second way into the same photos /travel already shows, so
 // /travel stays the page search engines index.
 export const metadata: Metadata = {
-  title: `${OWNER} — Travel Trail`,
+  title: `${OWNER} | Travel Trail`,
   description: `Follow ${OWNER}'s travels place by place on an interactive map.`,
   alternates: { canonical: "/travel" },
   robots: { index: false, follow: true },

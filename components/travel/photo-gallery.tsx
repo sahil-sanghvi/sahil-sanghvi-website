@@ -80,7 +80,7 @@ export function PhotoGallery({
                 </a>
                 {layout === "column" ? (
                   <figcaption className="text-flag text-muted-foreground mt-2">
-                    {String(i + 1).padStart(2, "0")} — {p.alt}
+                    {String(i + 1).padStart(2, "0")} · {p.alt}
                   </figcaption>
                 ) : (
                   <figcaption className="sr-only">{p.alt}</figcaption>

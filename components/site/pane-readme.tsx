@@ -18,12 +18,14 @@ export function ReadmePane({
   skills,
   projects,
   timeline,
+  showTravel,
   onContactClick,
 }: {
   profile: ShellProfile | null;
   skills: ShellSkill[];
   projects: ShellProject[];
   timeline: TimelineItem[];
+  showTravel: boolean;
   onContactClick: () => void;
 }) {
   const headline = profile?.headline ?? "CS student building full end-to-end software products.";
@@ -82,12 +84,14 @@ export function ReadmePane({
             GitHub
           </a>
         ) : null}
-        <Link
-          href="/travel"
-          className="border border-border px-5 py-2.5 text-xs font-bold uppercase tracking-widest hover:border-primary hover:text-primary transition-colors"
-        >
-          Travel
-        </Link>
+        {showTravel ? (
+          <Link
+            href="/travel"
+            className="border border-border px-5 py-2.5 text-xs font-bold uppercase tracking-widest hover:border-primary hover:text-primary transition-colors"
+          >
+            Travel
+          </Link>
+        ) : null}
         <button
           type="button"
           onClick={onContactClick}

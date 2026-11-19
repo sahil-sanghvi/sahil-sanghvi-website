@@ -4,7 +4,7 @@ import { getCourses } from "@/lib/content";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Active Coursework — sahil-sanghvi(1)",
+  title: "Active Coursework | sahil-sanghvi(1)",
   description: "Courses currently being worked on, each shipped to its own subdomain as the work happens.",
   alternates: { canonical: "/active-coursework" },
 };
@@ -22,7 +22,7 @@ export default async function ActiveCourseworkPage() {
       <p className="text-section-head text-muted-foreground uppercase">Active Coursework</p>
       <p className="text-body text-muted-foreground mt-4 max-w-[68ch]">
         Courses currently in progress. Each one that&rsquo;s far enough along gets its own subdomain, shipped and
-        updated as the work happens — not a writeup after the fact.
+        updated as the work happens, not a writeup after the fact.
       </p>
       <div className="mt-10 pl-6">
         {active.length > 0 ? (
@@ -31,7 +31,7 @@ export default async function ActiveCourseworkPage() {
               <div key={c.id}>
                 <a href={c.external_url} target="_blank" rel="noreferrer" className="group block">
                   <p className="text-body text-foreground group-hover:text-signal-500">
-                    {c.code} — {c.title}
+                    {c.code}: {c.title}
                   </p>
                   <p className="text-body text-muted-foreground mt-1">{c.summary}</p>
                   <p className="text-flag text-signal-500 group-hover:text-signal-600 mt-2">

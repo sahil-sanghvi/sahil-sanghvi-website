@@ -23,7 +23,7 @@ export default function OpengraphImage() {
           SAHIL-SANGHVI(1)
         </div>
         <div style={{ display: "flex", fontSize: 56, fontWeight: 700, marginTop: 24, lineHeight: 1.2 }}>
-          I build the whole thing —
+          I build the whole thing:
         </div>
         <div style={{ display: "flex", fontSize: 56, fontWeight: 700, lineHeight: 1.2 }}>
           the product, and the pipeline

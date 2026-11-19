@@ -22,7 +22,7 @@ export const courses: Course[] = [
   {
     id: "writ-109",
     code: "WRIT 109",
-    title: "Writer's World: Books + Film — Marvel",
+    title: "Writer's World: Books + Film, Marvel",
     term: "Fall 2023",
     year: 1,
     summary: "Writing elective — no code.",

@@ -8,7 +8,7 @@ import type { Experience } from "../types";
 export const experience: Experience[] = [
   {
     id: "uvic-registrar-work-study",
-    org: "University of Victoria — Office of the Registrar and Enrolment Management",
+    org: "University of Victoria, Office of the Registrar and Enrolment Management",
     role: "Office Assistant (Work Study)",
     employment_type: "part-time",
     location: "Victoria, BC",
@@ -47,7 +47,7 @@ export const experience: Experience[] = [
   {
     id: "protean-egov",
     org: "Protean eGov Technologies",
-    role: "AI Intern — CIO Department",
+    role: "AI Intern, CIO Department",
     employment_type: "internship",
     location: "Mumbai, India (remote)",
     start_date: "2026-05-01",
@@ -66,7 +66,7 @@ export const experience: Experience[] = [
   },
   {
     id: "rbc-borealis-lsi",
-    org: "RBC Borealis — Let's Solve It Mentorship",
+    org: "RBC Borealis, Let's Solve It Mentorship",
     role: "AI & Machine Learning Research Fellow",
     employment_type: "internship",
     location: "Remote, Canada",
@@ -86,7 +86,7 @@ export const experience: Experience[] = [
   },
   {
     id: "vimea-uvic",
-    org: "VIMEA — Manufacturing Collaboration Platform (UVic)",
+    org: "VIMEA, Manufacturing Collaboration Platform (UVic)",
     role: "Technical Consultant",
     employment_type: "contract",
     location: "Victoria, BC",
@@ -141,7 +141,7 @@ export const experience: Experience[] = [
   {
     id: "da-iict-guest-lecture",
     org: "DA-IICT",
-    role: "Assistant Guest Lecturer — Augmented Reality and C",
+    role: "Assistant Guest Lecturer, Augmented Reality and C",
     employment_type: "volunteer",
     location: "Gandhinagar, India",
     start_date: "2019-08-01",

@@ -19,14 +19,14 @@ export async function generateMetadata({
 
   if (!tech) {
     return {
-      title: "Projects — sahil-sanghvi(1)",
-      description: "Real, working projects — hackathon builds and shipped code, each linked to its source.",
+      title: "Projects | sahil-sanghvi(1)",
+      description: "Real, working projects: hackathon builds and shipped code, each linked to its source.",
       alternates: { canonical: "/projects" },
     };
   }
 
   return {
-    title: `Projects · ${tech} — sahil-sanghvi(1)`,
+    title: `Projects · ${tech} | sahil-sanghvi(1)`,
     alternates: { canonical: "/projects" },
   };
 }

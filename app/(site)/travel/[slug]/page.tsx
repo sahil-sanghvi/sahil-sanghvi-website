@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { siteUrl } from "@/lib/site-url";
+import { noDash } from "@/lib/no-dash";
 import {
   OWNER,
   formatCoords,
@@ -11,6 +12,7 @@ import {
   imageObjectLd,
   photoAlt,
   placeLabel,
+  storyText,
   toGallery,
   toMapStops,
 } from "@/lib/travel";
@@ -28,9 +30,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const stop = getTravelStop(slug);
   if (!stop) return {};
-  const title = `${OWNER} — ${placeLabel(stop)}`;
+  const title = noDash(`${OWNER} at ${placeLabel(stop)}`);
   const description =
-    [stop.title, stop.note].filter(Boolean).join(" — ").slice(0, 155) ||
+    storyText(stop)?.slice(0, 155) ||
     `${stop.photos.length} travel photo${stop.photos.length === 1 ? "" : "s"} of ${OWNER} in ${placeLabel(stop)}.`;
   const images = stop.photos.slice(0, 4).map((p, i) => ({
     url: p.src,
@@ -39,7 +41,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     alt: photoAlt(stop, p, i),
   }));
   return {
-    title: `${title} | Travel Photos`,
+    title: `${noDash(placeLabel(stop))} | ${OWNER} Travel Photos`,
     description,
     alternates: { canonical: `/travel/${slug}` },
     openGraph: { title, description, url: `/travel/${slug}`, type: "article", images },
@@ -64,8 +66,8 @@ export default async function TravelStopPage({ params }: { params: Promise<{ slu
         "@type": "ImageGallery",
         "@id": `${origin}/travel/${slug}`,
         url: `${origin}/travel/${slug}`,
-        name: `${OWNER} — ${placeLabel(stop)}`,
-        description: [stop.title, stop.note].filter(Boolean).join(" — ") || undefined,
+        name: noDash(`${OWNER} at ${placeLabel(stop)}`),
+        description: storyText(stop),
         author: { "@id": `${origin}/#person` },
         about: { "@id": `${origin}/#person` },
         contentLocation: {
@@ -107,7 +109,7 @@ export default async function TravelStopPage({ params }: { params: Promise<{ slu
       </nav>
 
       <h1 className="text-display text-foreground mt-3">
-        <span className="text-muted-foreground">{OWNER} —</span> {stop.name}
+        <span className="text-muted-foreground">{OWNER} ·</span> {noDash(stop.name)}
       </h1>
       <p className="text-flag text-muted-foreground mt-3">
         {[stop.region, date, formatCoords(stop.lat, stop.lng)].filter(Boolean).join(" · ")}
