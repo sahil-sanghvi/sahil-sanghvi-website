@@ -103,16 +103,16 @@ export function OsShell({
   return (
     <div className="theme-shell font-mono h-dvh overflow-hidden flex flex-col bg-background text-foreground">
       {/* OS top bar */}
-      <header className="h-9 border-b border-border flex items-center px-3 sm:px-4 justify-between bg-panel/60 backdrop-blur-md sticky top-0 z-50">
-        <div className="flex min-w-0 items-center gap-4 sm:gap-6">
+      <header className="h-12 border-b border-border flex items-center px-4 sm:px-6 justify-between bg-panel/60 backdrop-blur-md sticky top-0 z-50">
+        <div className="flex min-w-0 items-center gap-5 lg:gap-8">
           <div className="flex shrink-0 items-center gap-2">
-            <div className="size-2.5 rounded-full bg-primary animate-pulse" />
-            <span className="text-[10px] font-bold tracking-widest uppercase">{handle}.os</span>
+            <div className="size-3 rounded-full bg-primary animate-pulse" />
+            <span className="text-[13px] font-bold tracking-widest uppercase">{handle}.os</span>
           </div>
-          <nav className="hidden sm:flex gap-4 text-[10px] text-muted-foreground">
-            <span className="text-foreground">File</span>
-            <span>Edit</span>
-            <span>View</span>
+          <nav className="hidden md:flex gap-5 lg:gap-6 text-[13px] text-muted-foreground">
+            <span className="text-foreground hidden xl:inline">File</span>
+            <span className="hidden xl:inline">Edit</span>
+            <span className="hidden xl:inline">View</span>
             <Link href="/terminal" className="hover:text-primary transition-colors">
               Terminal
             </Link>
@@ -126,13 +126,13 @@ export function OsShell({
             ) : null}
           </nav>
         </div>
-        <div className="flex shrink-0 items-center gap-4 text-[10px] text-muted-foreground">
+        <div className="flex shrink-0 items-center gap-5 text-[13px] text-muted-foreground">
           {profile?.resume_url ? (
             <a
               href={profile.resume_url}
               target="_blank"
               rel="noreferrer"
-              className="hidden sm:inline hover:text-primary transition-colors"
+              className="hidden lg:inline hover:text-primary transition-colors"
             >
               Résumé
             </a>
@@ -142,7 +142,7 @@ export function OsShell({
               href={profile.socials.GitHub}
               target="_blank"
               rel="noreferrer"
-              className="hidden sm:inline hover:text-primary transition-colors"
+              className="hidden lg:inline hover:text-primary transition-colors"
             >
               GitHub
             </a>
@@ -152,12 +152,12 @@ export function OsShell({
               href={profile.socials.LinkedIn}
               target="_blank"
               rel="noreferrer"
-              className="hidden sm:inline hover:text-primary transition-colors"
+              className="hidden lg:inline hover:text-primary transition-colors"
             >
               LinkedIn
             </a>
           ) : null}
-          <span className="hidden sm:inline">{metrics.available ? "OPEN TO WORK" : "NOT AVAILABLE"}</span>
+          <span className="hidden lg:inline">{metrics.available ? "OPEN TO WORK" : "NOT AVAILABLE"}</span>
           <Clock />
         </div>
       </header>
